@@ -8,7 +8,7 @@ const JsonDiv = (props) => {
     return (
         <Accordion defaultActiveKey="0">
         <Accordion.Item eventKey="0">
-            <Accordion.Header>{props.title}</Accordion.Header>
+            <Accordion.Header  variant="success">{props.title}</Accordion.Header>
             <Accordion.Body style={{whiteSpace: "pre-wrap"}}>
             {Parser(FormatHighlight(props.jsonString))}
             </Accordion.Body>

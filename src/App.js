@@ -1,7 +1,5 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import * as cbor from './cbor.js';
-import JsonDiv from "./JsonDiv.js";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,18 +8,14 @@ import Nav from 'react-bootstrap/Nav';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Form from 'react-bootstrap/Form';
+import SKMatcher from './profiles/SK9072C.js'
 
 const { SerialPort, ReadlineParser } = eval(`require('serialport')`)
 
 var enableAutoScrollBottom = true
 
-const port = new SerialPort(
-  {
-    path: 'COM3',
-    baudRate: 921600,
-    autoOpen: false
-  }
-)
+var port = null
 
 const App = () => {
 
@@ -30,152 +24,14 @@ const App = () => {
   const [count, setCount] = useState(0);
   const [objIdx, setObjIdx] = useState(-1);
   const [portButtonStatus, setPortButtonStatus] = useState("Open");
+  const [portName, setPortName] = useState("")
+  const [baudRate, setBaudRate] = useState(921600)
+
+  const matcher = SKMatcher.build()
 
   //socket.on('stream', function (data) {
 
   //});
-
-  function hexStringToByteArray(hexString) {
-    if (hexString.length % 2 !== 0) {
-      throw "Must have an even number of hex digits to convert to bytes";
-    }
-    var numBytes = hexString.length / 2;
-    var byteArray = new Uint8Array(numBytes);
-    for (var i = 0; i < numBytes; i++) {
-      byteArray[i] = parseInt(hexString.substr(i * 2, 2), 16);
-    }
-    return byteArray;
-  }
-
-  const matcher = [
-    {
-      regex: /RECEIVED:/gm,
-      groupup: false,
-      build: (data) => {
-        try {
-          var cborhexstr = data
-            .replace("RECEIVED: ", "")
-            .match(/[a-z0-9]+/img)[0]
-          var cborarray = hexStringToByteArray(cborhexstr)
-          var decode = cbor.decode(cborarray.buffer)
-          return (
-            <JsonDiv
-              title={"RX MQTT"}
-              jsonString={JSON.stringify(decode, null, 4)} />
-          )
-        }
-        catch (e) {
-          return (
-            <div style={{ color: "red" }}>{data}</div>
-          )
-        }
-      }
-    }
-    ,
-    {
-      regex: /PUBLISH:/gm,
-      groupup: false,
-      build: (data) => {
-        try {
-          var cborhexstr = data
-            .replace("PUBLISH: ", "")
-            .match(/[a-z0-9]+/img)[0]
-          var cborarray = hexStringToByteArray(cborhexstr)
-          var decode = cbor.decode(cborarray.buffer)
-          return (
-            <div>
-              <JsonDiv
-                title={"TX MQTT"}
-                jsonString={JSON.stringify(decode, null, 4)} />
-            </div>
-          )
-        }
-        catch (e) {
-          return (
-            <div style={{ color: "red" }}>
-              {data}
-            </div>
-          )
-        }
-      }
-    },
-    {
-      regex: /^(?!.*CCAPI_ERR_CODE_NO_ERROR).*ERROR.*$/gmi,
-      groupup: false,
-      build: (data) => {
-        return (
-          <div style={{ color: "red" }}>
-            {data}
-          </div>
-        )
-      }
-    },
-    {
-      name: "ccapi",
-      regex: /ccapi\.c/gmi,
-      groupup: true,
-      groupstate: useState([]),
-      build: (data) => {
-        return (
-          <div>
-            {data}
-          </div>
-        )
-      }
-    },
-    {
-      name: "sys",
-      regex: /sys\_task\.c/gmi,
-      groupup: true,
-      groupstate: useState([]),
-      build: (data) => {
-        return (
-          <div style={{ color: "chocolate" }}>
-            {data}
-          </div>
-        )
-      }
-    },
-    {
-      name: "port_firpol",
-      regex: /ccapi_port_firpol\.c/gmi,
-      groupup: true,
-      groupstate: useState([]),
-      build: (data) => {
-        return (
-          <div>
-            {data}
-          </div>
-        )
-      }
-    },
-    {
-      name: "port_port_log",
-      regex: /ccapi_port_log\.c/gmi,
-      groupup: true,
-      groupstate: useState([]),
-      build: (data) => {
-        return (
-          <div>
-            {data}
-          </div>
-        )
-      }
-    },
-    {
-      name: "teltonika",
-      regex: /teltonika\.c/gmi,
-      groupup: true,
-      groupstate: useState([]),
-      build: (data) => {
-        return (
-          <div>
-            {data}
-          </div>
-        )
-      }
-    }
-  ]
 
   function styleObj(setter, line) {
     var matches = matcher.filter(
@@ -225,16 +81,54 @@ const App = () => {
   }
 
   function togglePort() {
-    if(portButtonStatus == "Open")
-      port.open()
-    else
+
+    function dataclbk(data) {
+      var str = String.fromCharCode.apply(null, data);
+      newData(str, str.length)
+    }
+
+    function openclbk(data) {
+      setPortButtonStatus("Close")
+    }
+
+    function closeclbk(data) {
+      setPortButtonStatus("Open")
+    }
+
+
+    if (port != null)
+    {
       port.close()
+
+      port.removeListener('data', dataclbk)
+      port.removeListener('open', openclbk)
+      port.removeListener('close', closeclbk)
+    }
+
+    port = new SerialPort(
+      {
+        path: portName,
+        baudRate: baudRate,
+        autoOpen: false
+      }
+    )
+
+    if (port.isOpen)
+      setPortButtonStatus("Close")
+    else
+      setPortButtonStatus("Open")
+
+    port.on('data', dataclbk)
+    port.on('open', openclbk)
+    port.on('close', closeclbk)
+
+    if (portButtonStatus == "Open")
+      port.open()
   }
 
   function clearLog() {
     matcher.forEach(element => {
-      if(element.groupstate !== undefined && element.groupstate !== null)
-      {
+      if (element.groupstate !== undefined && element.groupstate !== null) {
         const [st, setSt] = element.groupstate
         setSt([])
       }
@@ -243,19 +137,6 @@ const App = () => {
   }
 
   useEffect(() => {
-
-    port.on('data', function (data) {
-      var str = String.fromCharCode.apply(null, data);
-      newData(str, str.length)
-    })
-
-    port.on('open', () => {
-      setPortButtonStatus("Close")
-    })
-
-    port.on('close', () => {
-      setPortButtonStatus("Open")
-    })
 
   }, [])
 
@@ -299,9 +180,22 @@ const App = () => {
           </Nav>
         </Container>
       </Navbar>
+
       <Container>
-        <Button style={{ margin: "8px" }} onClick={() => {togglePort()}}>{portButtonStatus}</Button>
-        <Button style={{ margin: "8px" }} onClick={() => { clearLog() }}>Clear</Button>
+        <Row className="align-items-center">
+          <Col xs="auto">
+            <Button style={{ margin: "8px" }} onClick={() => { togglePort() }}>{portButtonStatus}</Button>
+          </Col>
+          <Col xs="auto">
+            <Button style={{ margin: "8px" }} onClick={() => { clearLog() }}>Clear</Button>
+          </Col>
+          <Col>
+            <Form.Control placeholder="COM" value={portName} onChange={event => setPortName(event.target.value)}/>
+          </Col>
+          <Col>
+            <Form.Control placeholder="BaudRate" value={baudRate} onChange={event => setBaudRate(event.target.value)}/>
+          </Col>
+        </Row>
       </Container>
 
       <Row>
