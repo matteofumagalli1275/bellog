@@ -2,15 +2,14 @@ const path = require("path");
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: "./src/index.js",
+    entry: "./src/index.tsx",
     devtool: "source-map",
     module: {
-        rules: [{
-                test: /\.(js|jsx)$/,
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
                 exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader"
-                }
             },
             {
                 test: /\.css$/,
@@ -18,13 +17,20 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
     output: {
         path: path.resolve(__dirname, "dist/"),
         filename: "bundle.js"
     },
     plugins: [
-        new CopyPlugin([
-                {from: 'src/index.html', to: './'}
-        ])
+        new CopyPlugin( { patterns:
+            [
+                {
+                    from: 'src/index.html', to: './'
+                }
+            ]
+        })
     ]
 };

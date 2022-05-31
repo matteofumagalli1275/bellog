@@ -1,14 +1,16 @@
-import React from "react";
+import * as React from "react";
+// @ts-ignore
 import FormatHighlight from 'json-format-highlight';
 import Accordion from 'react-bootstrap/Accordion';
 import Parser from 'html-react-parser';
 
-const JsonDiv = (props) => {
+const JsonDiv = (props : any) => {
+
 
     return (
         <Accordion defaultActiveKey="0">
         <Accordion.Item eventKey="0">
-            <Accordion.Header  variant="success">{props.title}</Accordion.Header>
+            <Accordion.Header>{props.title}</Accordion.Header>
             <Accordion.Body style={{whiteSpace: "pre-wrap"}}>
             {Parser(FormatHighlight(props.jsonString))}
             </Accordion.Body>

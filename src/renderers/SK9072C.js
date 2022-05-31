@@ -1,8 +1,5 @@
-import React from "react";
-import * as cbor from '../cbor.js';
-import JsonDiv from "../JsonDiv.js";
+
 import { useState, useEffect } from 'react';
-import stringify from "json-stringify-pretty-compact";
 
 class CcapiMsg
 {
@@ -74,20 +71,19 @@ const matcher = {
                             .replace("MQTT CCAPI RECV: ", "")
                             .match(/[a-z0-9]+/img)[0]
                         var cborarray = hexStringToByteArray(cborhexstr)
-                        var decode = cbor.decode(cborarray.buffer)
+                        var decode = CBOR.decode(cborarray.buffer)
 
-                        return (
-                            <JsonDiv
-                                title={"MQTT CCAPI RECV" + "   " + getSvcName(decode)}
-                                jsonString={getNiceJson(decode)} />
-                        )
+                        return React.createElement('JsonDiv', {
+                            title: "MQTT CCAPI RECV" + "   " + getSvcName(decode),
+                            jsonString: getNiceJson(decode)
+                        }, null);
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>
-                                {data}
-                            </div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -100,21 +96,20 @@ const matcher = {
                             .replace("MQTT CCAPI SEND: ", "")
                             .match(/[a-z0-9]+/img)[0]
                         var cborarray = hexStringToByteArray(cborhexstr)
-                        var decode = cbor.decode(cborarray.buffer)
-                        return (
-                            <div>
-                                <JsonDiv
-                                    title={"MQTT CCAPI SEND" + "   " + getSvcName(decode)}
-                                    jsonString={getNiceJson(decode)} />
-                            </div>
-                        )
+                        var decode = CBOR.decode(cborarray.buffer)
+
+                        return React.createElement('JsonDiv', {
+                            title: "MQTT CCAPI SEND" + "   " + getSvcName(decode),
+                            jsonString: getNiceJson(decode)
+                        }, null);
+
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>
-                                {data}
-                            </div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -127,17 +122,20 @@ const matcher = {
                             .replace("FILE CCAPI RECV: ", "")
                             .match(/[a-z0-9]+/img)[0]
                         var cborarray = hexStringToByteArray(cborhexstr)
-                        var decode = cbor.decode(cborarray.buffer)
-                        return (
-                            <JsonDiv
-                                title={"FILE CCAPI RECV"}
-                                jsonString={getNiceJson(decode)} />
-                        )
+                        var decode = CBOR.decode(cborarray.buffer)
+
+                        return React.createElement('JsonDiv', {
+                            title: "FILE CCAPI RECV",
+                            jsonString: getNiceJson(decode)
+                        }, null);
+
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>{data}</div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -150,21 +148,19 @@ const matcher = {
                             .replace("FILE CCAPI SEND: ", "")
                             .match(/[a-z0-9]+/img)[0]
                         var cborarray = hexStringToByteArray(cborhexstr)
-                        var decode = cbor.decode(cborarray.buffer)
-                        return (
-                            <div>
-                                <JsonDiv
-                                    title={"FILE CCAPI SEND"}
-                                    jsonString={getNiceJson(decode)} />
-                            </div>
-                        )
+                        var decode = CBOR.decode(cborarray.buffer)
+
+                        return React.createElement('JsonDiv', {
+                            title: "FILE CCAPI SEND",
+                            jsonString: getNiceJson(decode)
+                        }, null);
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>
-                                {data}
-                            </div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -176,17 +172,20 @@ const matcher = {
                         var b64 = data.replace("TCP CCAPI RECV: ", "")
                         var cborarray = Buffer.from(b64, 'base64');
         
-                        var decode = cbor.decode(new Uint8Array(cborarray).buffer)
-                        return (
-                            <JsonDiv
-                                title={"TCP CCAPI RECV"}
-                                jsonString={getNiceJson(decode)} />
-                        )
+                        var decode = CBOR.decode(new Uint8Array(cborarray).buffer)
+
+                        return React.createElement('JsonDiv', {
+                            title: "TCP CCAPI RECV",
+                            jsonString: getNiceJson(decode)
+                        }, null);
+
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>{data}</div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -197,21 +196,20 @@ const matcher = {
                     try {
                         var b64 = data.replace("TCP CCAPI SEND: ", "")
                         var cborarray = Buffer.from(b64, 'base64');
-                        var decode = cbor.decode(new Uint8Array(cborarray).buffer)
-                        return (
-                            <div>
-                                <JsonDiv
-                                    title={"TCP CCAPI SEND"}
-                                    jsonString={getNiceJson(decode)} />
-                            </div>
-                        )
+                        var decode = CBOR.decode(new Uint8Array(cborarray).buffer)
+
+                        return React.createElement('JsonDiv', {
+                            title: "TCP CCAPI SEND",
+                            jsonString: getNiceJson(decode)
+                        }, null);
+
                     }
                     catch (e) {
-                        return (
-                            <div style={{ color: "red" }}>
-                                {data}
-                            </div>
-                        )
+                        return React.createElement('div', {
+                            style: {
+                                color: "red"
+                            }
+                        }, data);
                     }
                 }
             },
@@ -219,11 +217,11 @@ const matcher = {
                 regex: /^(?!.*CCAPI_ERR_CODE_NO_ERROR).*ERROR.*$/gmi,
                 groupup: false,
                 build: (data) => {
-                    return (
-                        <div style={{ color: "red" }}>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div', {
+                        style: {
+                            color: "red"
+                        }
+                    }, data);
                 }
             },
             {
@@ -232,11 +230,7 @@ const matcher = {
                 groupup: true,
                 groupstate: useState([]),
                 build: (data) => {
-                    return (
-                        <div>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div',null, data);
                 }
             },
             {
@@ -245,11 +239,11 @@ const matcher = {
                 groupup: true,
                 groupstate: useState([]),
                 build: (data) => {
-                    return (
-                        <div style={{ color: "chocolate" }}>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div', {
+                        style: {
+                            color: "chocolate"
+                        }
+                    }, data);
                 }
             },
             {
@@ -258,11 +252,7 @@ const matcher = {
                 groupup: true,
                 groupstate: useState([]),
                 build: (data) => {
-                    return (
-                        <div>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div', null, data);
                 }
             },
             {
@@ -271,11 +261,7 @@ const matcher = {
                 groupup: true,
                 groupstate: useState([]),
                 build: (data) => {
-                    return (
-                        <div>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div', null, data);
                 }
             },
             {
@@ -284,11 +270,7 @@ const matcher = {
                 groupup: true,
                 groupstate: useState([]),
                 build: (data) => {
-                    return (
-                        <div>
-                            {data}
-                        </div>
-                    )
+                    return React.createElement('div', null, data);
                 }
             }
         ]
