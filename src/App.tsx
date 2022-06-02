@@ -1,37 +1,37 @@
 
 import * as React from 'react';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
-import {DriverSerialPortWebSerial} from './drivers/serialport-webserial'
 import {DriverStatus} from "./drivers/driver";
 import {LineParser} from "./parsers/lineparser";
 import {Property} from "csstype";
-import JsonDiv from "./JsonDiv"
-import stringify from "json-stringify-pretty-compact";
+import {IconContext} from "react-icons";
+import { FaBars } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom'
 
 import * as SKMatcher from './renderers/SK9072C'
 import {DriverClipboard} from "./drivers/clipboard";
 
-let driver = new DriverClipboard() /*new DriverSerialPortWebSerial(0, 0, {
-    baudRate: 115200
-})*/
+import './App.scss'
+import {ImFloppyDisk, ImStop2} from "react-icons/im";
+import {ImPlay3} from "react-icons/im";
+import {ImBin2} from "react-icons/im";
+import {RiSettings5Fill} from "react-icons/ri";
+import {DriverSerialPortWebSerial} from "./drivers/serialport-webserial";
 
-var enableAutoScrollBottom = true
-let parser = new LineParser()
+
+let enableAutoScrollBottom = true
+const parser = new LineParser()
 
 const App = () => {
-
+    const location = useLocation();
     const [obj, setObj] = useState([]);
     const [objIdx, setObjIdx] = useState(-1);
-    const [portButtonStatus, setPortButtonStatus] = useState<string>("Open");
+    const [driverStatus, setDriverStatus] = useState<DriverStatus>(DriverStatus.CLOSE);
     const divRef = React.useRef(null);
     const [flexDirection, setFlexDirection] = useState<Property.FlexDirection>("column-reverse")
+
+    let driver = useRef(null);
 
     const matcher = SKMatcher.default.build()
 
@@ -84,13 +84,29 @@ const App = () => {
     }
 
     useEffect( () => {
-        driver.onStatusChange((status) => {
-            setPortButtonStatus(
-                driver.status == DriverStatus.OPEN ? "Close" : "Open"
-            )
+
+        if(location.pathname.endsWith("/SK9072C") )
+        {
+            driver.current = new DriverSerialPortWebSerial(0, 0, {
+                baudRate: 921600
+            })
+        }
+        else if(location.pathname.endsWith("/PCAL"))
+        {
+            driver.current = new DriverSerialPortWebSerial(0, 0, {
+                baudRate: 115200
+            })
+        }
+        else
+        {
+            driver.current = new DriverClipboard()
+        }
+
+        driver.current.onStatusChange((status) => {
+            setDriverStatus(status)
         })
 
-        driver.onReceive((_data) => {
+        driver.current.onReceive((_data) => {
             parser.put(_data)
         })
 
@@ -130,9 +146,7 @@ const App = () => {
     } else {
         body = obj
     }
-
-    return (
-        <Container fluid>
+/*
             <Navbar bg="primary" variant="dark">
                 <Container fluid>
                     <Navbar.Brand onClick={() => setObjIdx(-1)}>App</Navbar.Brand>
@@ -146,31 +160,65 @@ const App = () => {
                     </Nav>
                 </Container>
             </Navbar>
+ */
+    return (
+        <div>
 
-            <Container>
-                <Row className="align-items-center">
-                    <Col xs="auto">
-                        <Button style={{margin: "8px"}} onClick={() => {
-                            driver.status == DriverStatus.OPEN ?
-                                driver.close() :
-                                driver.open()
-                        }}>{portButtonStatus}</Button>
-                    </Col>
-                    <Col xs="auto">
-                        <Button style={{margin: "8px"}} onClick={() => {
-                            clearLog()
-                        }}>Clear</Button>
-                    </Col>
-                </Row>
-            </Container>
-            <Row ref={divRef} /*style={
-                {overflow: "auto",
-                    display: "flex",
-                    flexDirection: flexDirection }}*/>
-                {body}
-            </Row>
-            <div ref={divRef}></div>
-        </Container>
+            <div className="bellog_navbar">
+                <div className="left">
+                    <div className="icon_container">
+                        <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
+                            <FaBars/>
+                        </IconContext.Provider>
+                    </div>
+                    <div>SK9072C</div>
+                </div>
+                <div className="center">
+                    <div className="icon_container" onClick={() => {
+                        driverStatus == DriverStatus.CLOSE ?
+                            driver.current.open() :
+                            driver.current.close()
+                    }}>
+                    <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
+                        {
+                            driverStatus == DriverStatus.CLOSE ? (
+                                <ImPlay3/>
+                            ) : (
+                                <ImStop2/>
+                            )
+                        }
+
+                    </IconContext.Provider>
+                    </div>
+                    <div className="icon_container" onClick={() => {clearLog()}}>
+                    <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
+                        <ImBin2/>
+                    </IconContext.Provider>
+                    </div>
+                    <div className="icon_container">
+                    <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
+                        <ImFloppyDisk/>
+                    </IconContext.Provider>
+                    </div>
+                </div>
+                <div className="right">
+                    <div className="icon_container">
+                        <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
+                            <RiSettings5Fill/>
+                        </IconContext.Provider>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bellog_below_navbar log_container">
+                <div>
+                    {body}
+                </div>
+                <div ref={divRef}></div>
+            </div>
+        </div>
+
+
     );
 
 };

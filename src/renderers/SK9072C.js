@@ -1,5 +1,7 @@
-
+import * as React from 'react';
 import { useState, useEffect } from 'react';
+import stringify from "json-stringify-pretty-compact";
+import JsonDiv from "../JsonDiv";
 
 class CcapiMsg
 {
@@ -150,7 +152,7 @@ const matcher = {
                         var cborarray = hexStringToByteArray(cborhexstr)
                         var decode = CBOR.decode(cborarray.buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "FILE CCAPI SEND",
                             jsonString: getNiceJson(decode)
                         }, null);
