@@ -29,7 +29,7 @@ const App = () => {
     const [objIdx, setObjIdx] = useState(-1);
     const [driverStatus, setDriverStatus] = useState<DriverStatus>(DriverStatus.CLOSE);
     const divRef = React.useRef(null);
-    const [flexDirection, setFlexDirection] = useState<Property.FlexDirection>("column-reverse")
+    const rendererRef = useRef();
 
     let driver = useRef(null);
 
@@ -220,7 +220,10 @@ const App = () => {
 
 
     );
-
+/*
+childRef.current.doSomething(event);
+ <Child ref={childRef} />
+*/ 
 };
 
 export default App;
