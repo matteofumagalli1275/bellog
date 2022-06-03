@@ -52,7 +52,6 @@ export class DriverSerialPortWebSerial implements Driver {
             try
             {
                 await this.getPortInstance()
-                await this.port.open(this.options)
                 this._status = DriverStatus.OPEN
                 this.onStatusChangeCb?.(this._status)
 

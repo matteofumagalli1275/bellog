@@ -25,9 +25,24 @@ function hexStringToByteArray(hexString) {
     return byteArray;
   }
 
+  function buf2hex(buffer) { // buffer is an ArrayBuffer
+    return buffer
+        .map(x => x.toString(16).padStart(2, '0'))
+        .join('');
+  }
+
+  function my_replacer(key, value) {
+    if (value instanceof Uint8Array) {
+        return buf2hex(value);
+    }
+    return value;
+  }
+
 function getNiceJson(obj)
 {
-    return stringify(obj)
+    return stringify(obj, {
+        replacer: my_replacer
+    })
 }
 
 var svcCache = []
@@ -75,7 +90,7 @@ const matcher = {
                         var cborarray = hexStringToByteArray(cborhexstr)
                         var decode = CBOR.decode(cborarray.buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "MQTT CCAPI RECV" + "   " + getSvcName(decode),
                             jsonString: getNiceJson(decode)
                         }, null);
@@ -100,7 +115,7 @@ const matcher = {
                         var cborarray = hexStringToByteArray(cborhexstr)
                         var decode = CBOR.decode(cborarray.buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "MQTT CCAPI SEND" + "   " + getSvcName(decode),
                             jsonString: getNiceJson(decode)
                         }, null);
@@ -126,7 +141,7 @@ const matcher = {
                         var cborarray = hexStringToByteArray(cborhexstr)
                         var decode = CBOR.decode(cborarray.buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "FILE CCAPI RECV",
                             jsonString: getNiceJson(decode)
                         }, null);
@@ -176,7 +191,7 @@ const matcher = {
         
                         var decode = CBOR.decode(new Uint8Array(cborarray).buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "TCP CCAPI RECV",
                             jsonString: getNiceJson(decode)
                         }, null);
@@ -200,7 +215,7 @@ const matcher = {
                         var cborarray = Buffer.from(b64, 'base64');
                         var decode = CBOR.decode(new Uint8Array(cborarray).buffer)
 
-                        return React.createElement('JsonDiv', {
+                        return React.createElement(JsonDiv, {
                             title: "TCP CCAPI SEND",
                             jsonString: getNiceJson(decode)
                         }, null);
