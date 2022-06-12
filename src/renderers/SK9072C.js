@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import stringify from "json-stringify-pretty-compact";
-import JsonDiv from "../JsonDiv";
+import JsonDiv from "./generic/matchrenderer/JsonDiv";
 
 class CcapiMsg
 {

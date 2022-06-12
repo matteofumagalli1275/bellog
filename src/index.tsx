@@ -1,12 +1,18 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client'
-import App from "./App";
+import App from "./app/App";
+import {Buffer} from "buffer"
+import * as CBOR from "./lib/cbor"
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {HashRouter} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// @ts-ignore
+window.CBOR = CBOR
+// @ts-ignore
+window.Buffer = Buffer
 
 root.render(
     <HashRouter>
