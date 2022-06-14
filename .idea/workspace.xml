@@ -2,28 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2a19c4e-6c91-4f00-b57c-6d2e9f30ded3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/AutoScroller.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Global.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/ProfileSetup.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/drivers/driverlist.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/generic/Generic.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/generic/Generic.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/ColoredText.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/JsonDiv.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/matchrendererslist.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderers/rendererslist.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/ProfileSetupComponentCapability.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/App.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/JsonDiv.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/JsonDiv.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/JsonDiv.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderers/CGPP-485.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/CGPP-485.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderers/SK9072C.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/SK9072C.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/ProfileSetup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/ProfileSetup.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderers/generic/Generic.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/Generic.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/ColoredText.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/ColoredText.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/JsonDiv.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/JsonDiv.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/matchrendererslist.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/matchrenderer/matchrendererslist.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,6 +110,7 @@
       <workItem from="1654885079348" duration="6077000" />
       <workItem from="1654939255043" duration="10187000" />
       <workItem from="1655058349052" duration="4819000" />
+      <workItem from="1655139234882" duration="10053000" />
     </task>
     <servers />
   </component>

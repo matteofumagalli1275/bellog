@@ -13,14 +13,14 @@ import './App.scss'
 import {ImBin2, ImFloppyDisk, ImPlay3, ImStop2} from "react-icons/im";
 import {RiSettings5Fill} from "react-icons/ri";
 import {DriverSerialPortWebSerial} from "../drivers/serialport-webserial";
-import {GenericRenderer, IGenericRendererParams} from "../renderers/generic/Generic";
+import {GenericRenderer, GenericRendererProperties} from "../renderers/generic/Generic";
 import {JsonDiv} from "../renderers/generic/matchrenderer/JsonDiv";
 import * as serialize from "serialize-javascript"
 import {ColoredText} from "../renderers/generic/matchrenderer/ColoredText";
 import ProfileSetup from "./ProfileSetup";
 
-class GenericRendererParams implements IGenericRendererParams {
-    entries = [
+class GenericRendererParams implements GenericRendererProperties {
+    items = [
         {
             regex: /^(FILE CCAPI SEND: )(.*)$|^(FILE CCAPI RECV: )(.*)$/gm,
             transformExp: function transform(matches) {
@@ -108,6 +108,11 @@ const App = () => {
         rendererRef.current.clear()
     }
 
+    function saveButton() {
+        let cfg = rendererRef.current.getConfig()
+        console.log(cfg)
+    }
+
     useEffect( () => {
 
         if(location.pathname.endsWith("/SK9072C") )
@@ -184,7 +189,7 @@ const App = () => {
                         <ImBin2/>
                     </IconContext.Provider>
                     </div>
-                    <div className="icon_container">
+                    <div className="icon_container"  onClick={() => saveButton()}>
                     <IconContext.Provider value={{className: "bellog_navbar_icon"}}>
                         <ImFloppyDisk/>
                     </IconContext.Provider>
@@ -202,8 +207,8 @@ const App = () => {
             <div className="bellog_below_navbar">
                 <Routes >
                     <Route path="/" element={<div>HELLO</div>}/>
-                    <Route path="/profile" element={<ProfileSetup></ProfileSetup>}/>
-                    <Route path="/device" element={<GenericRenderer ref={rendererRef} renderConfig={serialize(new GenericRendererParams())} />}/>
+                    <Route path="/profile" element={<ProfileSetup ref={rendererRef}/>}/>
+                    <Route path="/device" element={<GenericRenderer ref={rendererRef} items={[]/*serialize(new GenericRendererParams())*/} />}/>
                     <Route path="*" element={<div>404</div>}/>
                 </Routes >
 

@@ -5,14 +5,14 @@ import Parser from 'html-react-parser';
 
 import "./JsonDiv.scss"
 import stringify from "json-stringify-pretty-compact";
-import {ReactNode, useMemo} from "react";
+import {forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useState} from "react";
 import CodeMirror from '@uiw/react-codemirror';
 import {javascript} from "@codemirror/lang-javascript";
 
 interface JsonDivProperties {
     title: string | ((jsonObj: object, matches: string | string[], state: any) => string),
     matches: string[]
-    children: React.ReactNode
+    content: object
 }
 
 const state = {}
@@ -38,12 +38,7 @@ function getNiceJson(obj) {
 
 export const JsonDiv = (props : JsonDivProperties) => {
 
-    const jsonObj : object = (() => {
-        if(typeof props.children === "string")
-            return JSON.parse(props.children)
-        else
-            return props.children
-    })();
+    const jsonObj = props.content
 
     let headerContent = useMemo<ReactNode>(() => {
         let content
@@ -76,18 +71,32 @@ export const JsonDiv = (props : JsonDivProperties) => {
 
 };
 
-export const JsonDivSetup = (props : any) => {
+interface JsonDivPropertiesSetup {
+    titleTransform: string
+}
+
+export const JsonDivSetup =forwardRef((props : JsonDivPropertiesSetup, ref) => {
+
+    const [titleTransform, setTitleTransform] = useState<string>(props.titleTransform);
+
+    useImperativeHandle(ref, () => ({
+
+        getConfig() {
+            return this.props
+        }
+
+    }));
 
     return (
         <React.Fragment>
             <div>Title</div>
             <CodeMirror
-                value="//json div setup"
+                value={titleTransform}
                 height="200px"
                 extensions={[javascript({ jsx: false })]}
                 onChange={(value, viewUpdate) => {
-                    console.log('value:', value);
+                    setTitleTransform(value)
                 }}  />
         </React.Fragment>
     )
-}
+})

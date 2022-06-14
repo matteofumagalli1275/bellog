@@ -14,18 +14,18 @@ export const MatchRenderersList: MatchRenderersListEntry[] = [
     {
         name: "Json Div",
         matchrenderer: JsonDiv,
-        setup: () => {
+        setup: (props) => {
             return (
-                <JsonDivSetup/>
+                <JsonDivSetup {...props}/>
             )
         }
     },
     {
         name: "Colored Text",
         matchrenderer: ColoredText,
-        setup: () => {
+        setup: (props) => {
             return (
-                <ColoredTextSetup/>
+                <ColoredTextSetup {...props}/>
             )
         }
     }

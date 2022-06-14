@@ -2,25 +2,45 @@ import * as React from "react";
 import {Property} from "csstype";
 import {DriverList} from "../drivers/driverlist";
 import {RendererList} from "../renderers/rendererslist";
-import {useState} from "react";
-import {GenericRendererSetup} from "../renderers/generic/Generic";
+import {forwardRef, useImperativeHandle, useRef, useState} from "react";
+import {GenericRendererPropertiesSetup, GenericRendererSetup, MatchEntry} from "../renderers/generic/Generic";
+import {ProfileSetupComponentCapability} from "./ProfileSetupComponentCapability";
 
 interface ProfileSetupProperties {
-
+    profileName?: string
+    driverName?: string
+    renderName?: string
+    items?: object[]
 }
 
-const ProfileSetup = (props : ProfileSetupProperties) => {
+const ProfileSetup = forwardRef((props : ProfileSetupProperties, ref) => {
 
-    const [profileName, setPorileName] = useState("New Profile")
-    const [driverName, setDriverName] = useState(DriverList[0].name)
-    const [renderName, setRenderName] = useState<string>(RendererList[0].name)
+    const [profileName, setProfileName] = useState(props.profileName ?? "New Profile")
+    const [driverName, setDriverName] = useState(props.driverName ?? DriverList[0].name)
+    const [renderName, setRenderName] = useState(props.renderName ?? RendererList[0].name)
+    const items = props.items ?? []
+    const childRef = useRef<ProfileSetupComponentCapability>();
+
+    useImperativeHandle(ref, () => ({
+
+        getConfig() {
+            let config = {
+                profileName: profileName,
+                driverName: driverName,
+                renderName: renderName
+            }
+            //config.items = childRef.current.getConfig()
+            return config
+        }
+
+    }));
 
     return (
         <div>
             <h2>Setup Profile</h2>
             <div className="row gap1">
                 <div>Profile name: </div>
-                <input type="text" id="myText" value="Some text..."></input>
+                <input type="text" id="profilename" value={profileName} onChange={(evt) => {setProfileName(evt.target.value)}}></input>
             </div>
             <div className="row gap1">
                 <div>Driver: </div>
@@ -54,7 +74,7 @@ const ProfileSetup = (props : ProfileSetupProperties) => {
                             if(render.name === renderName)
                             {
                                 return (
-                                    <GenericRendererSetup renderConfig=""/>
+                                    <GenericRendererSetup ref={childRef} items={items as MatchEntry[]}/>
                                 )
                             }
                         }
@@ -63,6 +83,6 @@ const ProfileSetup = (props : ProfileSetupProperties) => {
             </div>
         </div>
     );
-};
+})
 
 export default ProfileSetup;

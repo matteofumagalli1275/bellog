@@ -21,6 +21,7 @@ import {MatchRenderersList} from "./matchrenderer/matchrendererslist";
 import {FaBars} from "react-icons/fa";
 import {RiAddFill} from "react-icons/ri";
 import {IconContext} from "react-icons";
+import {ProfileSetupComponentCapability} from "../../app/ProfileSetupComponentCapability";
 
 const supportedMatchRenderers = [
     JsonDiv.prototype.className,
@@ -40,12 +41,12 @@ export interface MatchEntry {
     sticky?: boolean
 }
 
-export interface IGenericRendererParams {
-    entries: Array<MatchEntry>
+export interface GenericRendererPropertiesSetup {
+    items: MatchEntry[]
 }
 
-export interface GenericRendererProperties {
-    renderConfig: string
+export interface GenericRendererProperties extends GenericRendererPropertiesSetup{
+
 }
 
 let keyId = 0
@@ -53,7 +54,7 @@ let keyId = 0
 export const GenericRenderer = forwardRef((props : GenericRendererProperties, ref) => {
 
     const [obj, setObj] = useState([]);
-    const params = useMemo<IGenericRendererParams>(() => eval('(' + props.renderConfig + ')'), []);
+    const entries = props.items //useMemo<IGenericRendererParams>(() => eval('(' + props.renderConfig + ')'), []);
     const parser = useMemo(() => new LineParser(), []);
 
 
@@ -97,7 +98,7 @@ export const GenericRenderer = forwardRef((props : GenericRendererProperties, re
     }
 
     function styleObj(setter : any, line: string) {
-        let matches = params.entries.map(
+        let matches = entries.map(
             element => {
                 let match = line.match(new RegExp(element.regex, 'i'))
                 if(!!match)
@@ -188,10 +189,20 @@ export const GenericRenderer = forwardRef((props : GenericRendererProperties, re
 
 });
 
-export const GenericRendererSetup = (props : GenericRendererProperties) => {
+export const GenericRendererSetup = forwardRef((props : GenericRendererPropertiesSetup, ref) => {
 
+    const childRef = useRef<ProfileSetupComponentCapability>();
+    const [items, setItems] = useState<MatchEntry[]>(props.items ?? [])
 
-    const [items, setItems] = useState<MatchEntry[]>([])
+    useImperativeHandle(ref, () => ({
+
+        getConfig() {
+            let config = props
+            //config.items = childRef.current.getConfig()
+            return config
+        }
+
+    }));
 
     function addItem()
     {
@@ -239,6 +250,11 @@ export const GenericRendererSetup = (props : GenericRendererProperties) => {
         setItems([...items])
     }
 
+    function onContentTransformChange(item: MatchEntry, value:string)
+    {
+
+    }
+
     return (
         <React.Fragment>
             {
@@ -258,7 +274,7 @@ export const GenericRendererSetup = (props : GenericRendererProperties) => {
                                         height="200px"
                                         extensions={[javascript({ jsx: false })]}
                                         onChange={(value, viewUpdate) => {
-                                            console.log('value:', value);
+                                            onContentTransformChange(item, value)
                                         }}
                                     />
                                 </div>
@@ -284,7 +300,9 @@ export const GenericRendererSetup = (props : GenericRendererProperties) => {
                                             matchrenderer => {
                                                 if(item.matchRenderer === matchrenderer.name)
                                                 {
-                                                    return matchrenderer.setup()
+                                                    return matchrenderer.setup({
+                                                        ref: childRef
+                                                    })
                                                 }
                                             }
                                         )
@@ -305,4 +323,4 @@ export const GenericRendererSetup = (props : GenericRendererProperties) => {
             </div>
         </React.Fragment>
     )
-}
+})
