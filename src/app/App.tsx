@@ -18,6 +18,8 @@ import {JsonDiv} from "../renderers/generic/matchrenderer/JsonDiv";
 import * as serialize from "serialize-javascript"
 import {ColoredText} from "../renderers/generic/matchrenderer/ColoredText";
 import ProfileSetup from "./ProfileSetup";
+import {DriverList} from "../drivers/driverlist";
+import {RendererList} from "../renderers/rendererslist";
 
 class GenericRendererParams implements GenericRendererProperties {
     items = [
@@ -207,7 +209,12 @@ const App = () => {
             <div className="bellog_below_navbar">
                 <Routes >
                     <Route path="/" element={<div>HELLO</div>}/>
-                    <Route path="/profile" element={<ProfileSetup ref={rendererRef}/>}/>
+                    <Route path="/profile" element={<ProfileSetup ref={rendererRef} profile={{
+                        profileName: "New Profile",
+                        renderName: RendererList[0].name,
+                        driverName: DriverList[0].name,
+                        items: []
+                    }}/>}/>
                     <Route path="/device" element={<GenericRenderer ref={rendererRef} items={[]/*serialize(new GenericRendererParams())*/} />}/>
                     <Route path="*" element={<div>404</div>}/>
                 </Routes >

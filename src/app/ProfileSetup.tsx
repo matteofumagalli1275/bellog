@@ -2,45 +2,34 @@ import * as React from "react";
 import {Property} from "csstype";
 import {DriverList} from "../drivers/driverlist";
 import {RendererList} from "../renderers/rendererslist";
-import {forwardRef, useImperativeHandle, useRef, useState} from "react";
+import {createContext, forwardRef, useImperativeHandle, useReducer, useRef, useState} from "react";
 import {GenericRendererPropertiesSetup, GenericRendererSetup, MatchEntry} from "../renderers/generic/Generic";
-import {ProfileSetupComponentCapability} from "./ProfileSetupComponentCapability";
+import {IProfile} from "./ProfileContext";
 
-interface ProfileSetupProperties {
-    profileName?: string
-    driverName?: string
-    renderName?: string
-    items?: object[]
+interface ContextWithSetter {
+    profile: IProfile;
+    setProfile: (value: IProfile) => void;
 }
 
-const ProfileSetup = forwardRef((props : ProfileSetupProperties, ref) => {
+export const ProfileContext = createContext<ContextWithSetter>(undefined);
 
-    const [profileName, setProfileName] = useState(props.profileName ?? "New Profile")
-    const [driverName, setDriverName] = useState(props.driverName ?? DriverList[0].name)
-    const [renderName, setRenderName] = useState(props.renderName ?? RendererList[0].name)
-    const items = props.items ?? []
-    const childRef = useRef<ProfileSetupComponentCapability>();
+function reducer(state, item): IProfile
+{
+    return {...state, ...item}
+}
 
-    useImperativeHandle(ref, () => ({
+const ProfileSetup = forwardRef((props : {profile: IProfile}, ref) => {
 
-        getConfig() {
-            let config = {
-                profileName: profileName,
-                driverName: driverName,
-                renderName: renderName
-            }
-            //config.items = childRef.current.getConfig()
-            return config
-        }
-
-    }));
+    const [profile, setProfile] = useReducer(reducer, props.profile);
 
     return (
         <div>
+            <ProfileContext.Provider value={{profile, setProfile}}>
             <h2>Setup Profile</h2>
             <div className="row gap1">
                 <div>Profile name: </div>
-                <input type="text" id="profilename" value={profileName} onChange={(evt) => {setProfileName(evt.target.value)}}></input>
+                <input type="text" id="profilename" value={profile.profileName}
+                       onChange={(evt) => {setProfile({profileName: evt.target.value})}}></input>
             </div>
             <div className="row gap1">
                 <div>Driver: </div>
@@ -71,16 +60,17 @@ const ProfileSetup = forwardRef((props : ProfileSetupProperties, ref) => {
                 {
                     RendererList.map(
                         render => {
-                            if(render.name === renderName)
+                            if(render.name === profile.renderName)
                             {
                                 return (
-                                    <GenericRendererSetup ref={childRef} items={items as MatchEntry[]}/>
+                                    <GenericRendererSetup/>
                                 )
                             }
                         }
                     )
                 }
             </div>
+            </ProfileContext.Provider>
         </div>
     );
 })

@@ -7,7 +7,7 @@ import {
     useImperativeHandle,
     useMemo,
     DetailedReactHTMLElement,
-    InputHTMLAttributes
+    InputHTMLAttributes, useContext, useReducer
 } from "react";
 import {LineParser} from "../../parsers/lineparser";
 import {JsonDiv} from "./matchrenderer/JsonDiv";
@@ -22,6 +22,8 @@ import {FaBars} from "react-icons/fa";
 import {RiAddFill} from "react-icons/ri";
 import {IconContext} from "react-icons";
 import {ProfileSetupComponentCapability} from "../../app/ProfileSetupComponentCapability";
+import {ProfileContext} from "../../app/ProfileSetup";
+import {MatchRendererContext} from "../../app/MatchRendererContext";
 
 const supportedMatchRenderers = [
     JsonDiv.prototype.className,
@@ -189,25 +191,14 @@ export const GenericRenderer = forwardRef((props : GenericRendererProperties, re
 
 });
 
-export const GenericRendererSetup = forwardRef((props : GenericRendererPropertiesSetup, ref) => {
+export const GenericRendererSetup = forwardRef((ref) => {
 
-    const childRef = useRef<ProfileSetupComponentCapability>();
-    const [items, setItems] = useState<MatchEntry[]>(props.items ?? [])
-
-    useImperativeHandle(ref, () => ({
-
-        getConfig() {
-            let config = props
-            //config.items = childRef.current.getConfig()
-            return config
-        }
-
-    }));
+    const {profile, setProfile} = useContext(ProfileContext);
 
     function addItem()
     {
-        setItems(
-            [...items,
+        setProfile({
+            items: [...profile.items,
                 {
                     fiterable: false,
                     matchRendererProperties: {},
@@ -216,38 +207,51 @@ export const GenericRendererSetup = forwardRef((props : GenericRendererPropertie
                     matchRenderer: "Colored Text"
                 }
             ]
-        )
+        })
     }
 
     function deleteItem(item)
     {
-        setItems(
-            items.filter(
+        setProfile({
+            items: profile.items.filter(
                 it => it !== item
             )
-        )
+        })
+    }
+
+    function onMatchPropertiesChange(item: MatchEntry, values:object[])
+    {
+        setProfile({
+            items: profile.items.map(
+                it => {
+                    if (it === item) {
+                        it.matchRendererProperties = values
+                    }
+                    return it
+                }
+            )
+        })
     }
 
     function onMatchRendererSelect(item: MatchEntry, value:string)
     {
-        setItems(
-            items.map(
+        setProfile({
+            items: profile.items.map(
                 it => {
-                    if(it === item)
-                    {
+                    if (it === item) {
                         it.matchRenderer = value
                     }
                     return it
                 }
             )
-        )
+        })
 
     }
 
     function onRegexChange(item: MatchEntry, value:string)
     {
         item.regex = value
-        setItems([...items])
+        setProfile({items: [...profile.items]})
     }
 
     function onContentTransformChange(item: MatchEntry, value:string)
@@ -258,7 +262,7 @@ export const GenericRendererSetup = forwardRef((props : GenericRendererPropertie
     return (
         <React.Fragment>
             {
-                items.map(
+                profile.items.map(
                     item => {
                         return (
                             <div>
@@ -294,19 +298,29 @@ export const GenericRendererSetup = forwardRef((props : GenericRendererPropertie
                                     </select>
                                 </div>
                                 <div>
+
                                     <h4>Match renderer configuration:</h4>
                                     {
                                         MatchRenderersList.map(
                                             matchrenderer => {
                                                 if(item.matchRenderer === matchrenderer.name)
                                                 {
-                                                    return matchrenderer.setup({
-                                                        ref: childRef
-                                                    })
+                                                    const [renderer, setRenderer] = useReducer((state, _item) => {
+                                                            let newObj = {...state, ..._item}
+                                                            onMatchPropertiesChange(item, newObj)
+                                                            return newObj
+                                                        }, item.matchRendererProperties);
+
+                                                    return (
+                                                        <MatchRendererContext.Provider value={{renderer, setRenderer}}>
+                                                            { matchrenderer.setup() }
+                                                        </MatchRendererContext.Provider>
+                                                    )
                                                 }
                                             }
                                         )
                                     }
+
                                 </div>
                                 <div className="button redbk" onClick={() => deleteItem(item)}>
                                     Delete
