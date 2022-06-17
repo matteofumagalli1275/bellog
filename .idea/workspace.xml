@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2a19c4e-6c91-4f00-b57c-6d2e9f30ded3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/MatchRendererContext.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/ProfileContext.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderers/rendererslist.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/ProfileContext.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/ProfileContext.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/ProfileSetup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/ProfileSetup.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderers/generic/Generic.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderers/generic/Generic.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderers/rendererslist.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,6 +112,7 @@
       <workItem from="1655139234882" duration="10053000" />
       <workItem from="1655224544440" duration="7281000" />
       <workItem from="1655308806430" duration="411000" />
+      <workItem from="1655396679693" duration="10550000" />
     </task>
     <servers />
   </component>

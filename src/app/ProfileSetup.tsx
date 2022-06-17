@@ -2,34 +2,68 @@ import * as React from "react";
 import {Property} from "csstype";
 import {DriverList} from "../drivers/driverlist";
 import {RendererList} from "../renderers/rendererslist";
-import {createContext, forwardRef, useImperativeHandle, useReducer, useRef, useState} from "react";
+import {
+    createContext,
+    Dispatch,
+    forwardRef,
+    SetStateAction,
+    useImperativeHandle,
+    useMemo,
+    useReducer,
+    useRef,
+    useState
+} from "react";
 import {GenericRendererPropertiesSetup, GenericRendererSetup, MatchEntry} from "../renderers/generic/Generic";
-import {IProfile} from "./ProfileContext";
+import {IProfile, ContextWithSetter} from "./ProfileContext";
 
-interface ContextWithSetter {
-    profile: IProfile;
-    setProfile: (value: IProfile) => void;
+
+export const ProfileContext = createContext<ContextWithSetter<IProfile>>(undefined);
+export const ViewContext = createContext<ContextWithSetter<any[]>>(undefined);
+
+function useStateWithCallback<T>(initialValue: T, onUpdate: (T) => void):  [T, ((newValue: T, propagateState?: boolean) => void)] {
+
+    const [state, _setState] = useState<T>(initialValue)
+    //this logic is up to you
+    const setState = (newState, propagateState: boolean = true) => {
+        if(propagateState)
+            _setState(newState)
+        onUpdate(newState)
+    }
+    return [state, setState]
 }
 
-export const ProfileContext = createContext<ContextWithSetter>(undefined);
+const ProfileSetup = forwardRef((props : {profile: IProfile, onConfigUpdate: any}, ref) => {
 
-function reducer(state, item): IProfile
-{
-    return {...state, ...item}
-}
+    const [profileName, setProfileName] = useStateWithCallback(props.profile.profileName, () => {
+        props.onConfigUpdate({profileName: profileName})
+    })
 
-const ProfileSetup = forwardRef((props : {profile: IProfile}, ref) => {
+    const [driverName, setDriverName] =  useStateWithCallback(props.profile.driverName, () => {
+        props.onConfigUpdate({driverName: driverName})
+    })
 
-    const [profile, setProfile] = useReducer(reducer, props.profile);
+    const [views, setViews] = useStateWithCallback<any[]>(props.profile.views ?? [], () => {
+        props.onConfigUpdate({views: views})
+    })
+
+    function setViewConfig(view: any, cfg: any)
+    {
+
+        //views[views.indexOf(view)] = cfg
+    }
+
+    function setProfileViews(views: any[])
+    {
+        profile.views = views
+    }
 
     return (
         <div>
-            <ProfileContext.Provider value={{profile, setProfile}}>
             <h2>Setup Profile</h2>
             <div className="row gap1">
                 <div>Profile name: </div>
-                <input type="text" id="profilename" value={profile.profileName}
-                       onChange={(evt) => {setProfile({profileName: evt.target.value})}}></input>
+                <input type="text" id="profilename" value={profileName}
+                       onChange={(evt) => setProfileName(evt.target.value)}></input>
             </div>
             <div className="row gap1">
                 <div>Driver: </div>
@@ -43,6 +77,45 @@ const ProfileSetup = forwardRef((props : {profile: IProfile}, ref) => {
                     }
                 </select>
             </div>
+            {
+                views.map(
+                    (view, index) => {
+                        return (
+                            <React.Fragment>
+                                {
+                                    RendererList.map(
+                                        renderer => {
+                                            return <option value={renderer.name}>{renderer.name}</option>
+                                        }
+                                    )
+                                }
+                                {
+                                    RendererList.map(
+                                        render => {
+                                            if(render.name === view.name)
+                                            {
+                                                return (
+                                                    <GenericRendererSetup config={view}
+                                                                          onConfigChange={(newView) =>
+                                                                              setViews(
+                                                                                  views.map((n_view, n_index) => {
+                                                                                      if(n_index == index)
+                                                                                          return newView
+                                                                                      else
+                                                                                          return n_view
+                                                                                  }), false)
+                                                                          }/>
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                            </React.Fragment>
+                        )
+
+                    }
+                )
+            }
             <div className="row gap1">
                 <div>Renderer: </div>
                 <select name="cars" id="cars">
@@ -55,7 +128,8 @@ const ProfileSetup = forwardRef((props : {profile: IProfile}, ref) => {
                     }
                 </select>
             </div>
-            <h3>Renderer configuration</h3>
+            <h3>View configuration</h3>
+            <ViewContext.Provider value={[views, setProfileViews]}>
             <div className="profile_setup_row">
                 {
                     RendererList.map(
@@ -70,7 +144,7 @@ const ProfileSetup = forwardRef((props : {profile: IProfile}, ref) => {
                     )
                 }
             </div>
-            </ProfileContext.Provider>
+            </ViewContext.Provider>
         </div>
     );
 })

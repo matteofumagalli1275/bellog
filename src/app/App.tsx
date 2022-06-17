@@ -213,7 +213,7 @@ const App = () => {
                         profileName: "New Profile",
                         renderName: RendererList[0].name,
                         driverName: DriverList[0].name,
-                        items: []
+                        views: []
                     }}/>}/>
                     <Route path="/device" element={<GenericRenderer ref={rendererRef} items={[]/*serialize(new GenericRendererParams())*/} />}/>
                     <Route path="*" element={<div>404</div>}/>

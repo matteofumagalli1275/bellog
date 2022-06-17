@@ -7,7 +7,7 @@ import {
     useImperativeHandle,
     useMemo,
     DetailedReactHTMLElement,
-    InputHTMLAttributes, useContext, useReducer
+    InputHTMLAttributes, useContext, useReducer, createContext
 } from "react";
 import {LineParser} from "../../parsers/lineparser";
 import {JsonDiv} from "./matchrenderer/JsonDiv";
@@ -22,8 +22,9 @@ import {FaBars} from "react-icons/fa";
 import {RiAddFill} from "react-icons/ri";
 import {IconContext} from "react-icons";
 import {ProfileSetupComponentCapability} from "../../app/ProfileSetupComponentCapability";
-import {ProfileContext} from "../../app/ProfileSetup";
+import {ProfileContext, ViewContext} from "../../app/ProfileSetup";
 import {MatchRendererContext} from "../../app/MatchRendererContext";
+import {ContextWithSetter} from "../../app/ProfileContext";
 
 const supportedMatchRenderers = [
     JsonDiv.prototype.className,
@@ -191,14 +192,30 @@ export const GenericRenderer = forwardRef((props : GenericRendererProperties, re
 
 });
 
-export const GenericRendererSetup = forwardRef((ref) => {
+export const GenericRendererSetup = forwardRef((props : any, ref)  => {
 
-    const {profile, setProfile} = useContext(ProfileContext);
+    let [views, setViews] = useContext(ViewContext);
+    const [items, setItems] = useReducer(reducer, views)
+
+    function reducer(state, newviews) {
+        views = newviews
+        return views
+    }
+
+    function setViewsUpdate(new_views)
+    {
+        // Notify parent non-state configuration
+        setViews(new_views)
+        // Notify local state for change
+        setItems(new_views)
+    }
 
     function addItem()
     {
-        setProfile({
-            items: [...profile.items,
+
+        setItems(
+            [
+                ...items,
                 {
                     fiterable: false,
                     matchRendererProperties: {},
@@ -207,51 +224,43 @@ export const GenericRendererSetup = forwardRef((ref) => {
                     matchRenderer: "Colored Text"
                 }
             ]
-        })
+        )
     }
 
     function deleteItem(item)
     {
-        setProfile({
-            items: profile.items.filter(
-                it => it !== item
-            )
-        })
+        views = views.filter(
+            it => it !== item
+        )
     }
 
     function onMatchPropertiesChange(item: MatchEntry, values:object[])
     {
-        setProfile({
-            items: profile.items.map(
-                it => {
-                    if (it === item) {
-                        it.matchRendererProperties = values
-                    }
-                    return it
+        views = views.map(
+            it => {
+                if (it === item) {
+                    it.matchRendererProperties = values
                 }
-            )
-        })
+                return it
+            }
+        )
     }
 
     function onMatchRendererSelect(item: MatchEntry, value:string)
     {
-        setProfile({
-            items: profile.items.map(
-                it => {
-                    if (it === item) {
-                        it.matchRenderer = value
-                    }
-                    return it
+        views = views.map(
+            it => {
+                if (it === item) {
+                    it.matchRenderer = value
                 }
-            )
-        })
-
+                return it
+            }
+        )
     }
 
     function onRegexChange(item: MatchEntry, value:string)
     {
         item.regex = value
-        setProfile({items: [...profile.items]})
     }
 
     function onContentTransformChange(item: MatchEntry, value:string)
@@ -262,7 +271,7 @@ export const GenericRendererSetup = forwardRef((ref) => {
     return (
         <React.Fragment>
             {
-                profile.items.map(
+                views.map(
                     item => {
                         return (
                             <div>
@@ -297,7 +306,9 @@ export const GenericRendererSetup = forwardRef((ref) => {
                                         }
                                     </select>
                                 </div>
-                                <div>
+                                {
+                                    /*
+                                                                    <div>
 
                                     <h4>Match renderer configuration:</h4>
                                     {
@@ -322,6 +333,8 @@ export const GenericRendererSetup = forwardRef((ref) => {
                                     }
 
                                 </div>
+                                     */
+                                }
                                 <div className="button redbk" onClick={() => deleteItem(item)}>
                                     Delete
                                 </div>

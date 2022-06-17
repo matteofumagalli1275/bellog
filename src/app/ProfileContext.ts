@@ -4,6 +4,7 @@ export interface IProfile {
     profileName?: string
     driverName?: string
     renderName?: string
-    items?: any[]
+    views?: any[]
 }
 
+export type ContextWithSetter<T> = [T, (value: T) => void]
