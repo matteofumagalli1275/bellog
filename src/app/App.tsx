@@ -17,7 +17,7 @@ import {GenericRenderer, GenericRendererProperties} from "../renderers/generic/G
 import {JsonDiv} from "../renderers/generic/matchrenderer/JsonDiv";
 import * as serialize from "serialize-javascript"
 import {ColoredText} from "../renderers/generic/matchrenderer/ColoredText";
-import ProfileSetup from "./ProfileSetup";
+import ProfileSetup from "../components/setup/ProfileSetup";
 import {DriverList} from "../drivers/driverlist";
 import {RendererList} from "../renderers/rendererslist";
 
@@ -213,8 +213,11 @@ const App = () => {
                         profileName: "New Profile",
                         renderName: RendererList[0].name,
                         driverName: DriverList[0].name,
+                        parsers: [],
+                        scripts: [],
                         views: []
-                    }}/>}/>
+                    }}
+                    onConfigUpdate={() => {}}/>}/>
                     <Route path="/device" element={<GenericRenderer ref={rendererRef} items={[]/*serialize(new GenericRendererParams())*/} />}/>
                     <Route path="*" element={<div>404</div>}/>
                 </Routes >

@@ -24,10 +24,13 @@
   "license": "ISC",
   "dependencies": {
     "@codemirror/lang-javascript": "^6.0.0",
+    "@fortawesome/fontawesome-free": "^6.1.1",
     "@uiw/react-codemirror": "^4.8.1",
     "buffer": "^6.0.3",
+    "bulma": "^0.9.4",
     "copy-webpack-plugin": "^11.0.0",
     "html-react-parser": "^1.4.13",
+    "js-beautify": "^1.14.4",
     "json-format-highlight": "^1.0.4",
     "json-stringify-pretty-compact": "^4.0.0",
     "react": "^18.1.0",

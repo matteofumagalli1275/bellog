@@ -6,6 +6,11 @@ import {Buffer} from "buffer"
 import * as CBOR from "./lib/cbor"
 
 import {HashRouter} from "react-router-dom";
+import './mystyles.scss'
+import '@fortawesome/fontawesome-free/js/fontawesome'
+import '@fortawesome/fontawesome-free/js/solid'
+import '@fortawesome/fontawesome-free/js/regular'
+import '@fortawesome/fontawesome-free/js/brands'
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

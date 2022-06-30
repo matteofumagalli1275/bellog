@@ -8,6 +8,7 @@ import stringify from "json-stringify-pretty-compact";
 import {forwardRef, ReactNode, useEffect, useImperativeHandle, useMemo, useState} from "react";
 import CodeMirror from '@uiw/react-codemirror';
 import {javascript} from "@codemirror/lang-javascript";
+import {useStateWithCallback} from "../../../utility/customHooks";
 
 interface JsonDivProperties {
     title: string | ((jsonObj: object, matches: string | string[], state: any) => string),
@@ -72,31 +73,41 @@ export const JsonDiv = (props : JsonDivProperties) => {
 };
 
 interface JsonDivPropertiesSetup {
-    titleTransform: string
+    title: string,
+    isExpression: boolean
 }
 
-export const JsonDivSetup =forwardRef((props : JsonDivPropertiesSetup, ref) => {
 
-    const [titleTransform, setTitleTransform] = useState<string>(props.titleTransform);
 
-    useImperativeHandle(ref, () => ({
+export const JsonDivSetup = (props : {cfg: JsonDivPropertiesSetup, onConfigUpdate: any}) => {
 
-        getConfig() {
-            return this.props
-        }
-
-    }));
+    const [title, setTitle] = useStateWithCallback(props.cfg.title, () => {
+        props.onConfigUpdate({titleTransform: title})
+    })
+    const [isExpression, setIsExpression] = useStateWithCallback(props.cfg.isExpression, () => {
+        props.onConfigUpdate({isExpression: isExpression})
+    })
 
     return (
         <React.Fragment>
             <div>Title</div>
-            <CodeMirror
-                value={titleTransform}
-                height="200px"
-                extensions={[javascript({ jsx: false })]}
-                onChange={(value, viewUpdate) => {
-                    setTitleTransform(value)
-                }}  />
+            <input type="checkbox" id="exp_checkbox"
+                   checked={isExpression}
+                   onChange={(evt)=> setIsExpression(evt.target.checked)}/>
+            <label htmlFor="exp_checkbox">Expression</label>
+            {
+                isExpression ?
+                    <CodeMirror
+                        value={title}
+                        height="200px"
+                        extensions={[javascript({ jsx: false })]}
+                        onChange={(value, viewUpdate) => {
+                            setTitle(value)
+                        }}  /> :
+                    <input type="text" id="profilename" value={title}
+                           onChange={(evt) => setTitle(evt.target.value)}></input>
+            }
+
         </React.Fragment>
     )
-})
+}

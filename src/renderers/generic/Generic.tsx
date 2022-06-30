@@ -22,7 +22,7 @@ import {FaBars} from "react-icons/fa";
 import {RiAddFill} from "react-icons/ri";
 import {IconContext} from "react-icons";
 import {ProfileSetupComponentCapability} from "../../app/ProfileSetupComponentCapability";
-import {ProfileContext, ViewContext} from "../../app/ProfileSetup";
+import {ProfileContext, ViewContext} from "../../components/setup/ProfileSetup";
 import {MatchRendererContext} from "../../app/MatchRendererContext";
 import {ContextWithSetter} from "../../app/ProfileContext";
 
