@@ -1,28 +1,58 @@
 # Security Considerations
 
-Bellog does not send data to any server, all streams are processed locally.
+## Data Privacy
 
-However to run bellog relies heavily on runtime evaluation of javascript code.
-If you are using thid-party bellog proejcts (.bll files) this can be dangerous since a malicious project may inject bad code
-depending on browser vulnerabilities.
+Bellog processes all data locally in your browser — no telemetry, analytics, or stream data is sent to external servers.
 
-Basic protection agains thid-party script that may send private data to their server or inject malicous data to your device
-is provided via a csp policy in page header
+## Importing External Profiles & Libraries
 
+Bellog profiles (`.bll` files) and libraries may contain JavaScript code that is executed inside your browser session via runtime evaluation (`eval` / `new Function`).
+
+A malicious profile could attempt to:
+
+- Display fake UI elements to phish for credentials or payments.
+- Read or manipulate data visible in the current browser tab.
+- Exploit browser vulnerabilities to access system resources.
+
+### Mitigations
+
+A Content-Security-Policy (CSP) header is set to block cross-origin network requests:
+
+```html
+<meta http-equiv="Content-Security-Policy"
+      content="default-src ws: localhost:* 'self' 'unsafe-inline' 'unsafe-eval'">
 ```
-<meta http-equiv="Content-Security-Policy" content="default-src ws: localhost:* 'self' 'unsafe-inline' 'unsafe-eval'">
-```
 
-This prevents any cross origin request.
+This prevents scripts from loading external resources or exfiltrating data to third-party servers.
 
-**This is not a complete protection since unsafe evaluation and unsafe-inline permission still allow a malicous bll project to inject dangerous code.**
+### Limitations
 
-**Examples are popup or instructions that fakes to be from bellog to ask for money or link to external infected sites**
+This is **not** a complete protection. The `unsafe-eval` and `unsafe-inline` directives are required for Bellog's core functionality and still allow a malicious profile to:
 
-**TL;DR always ensure to get bellog projects from a trusted source**
+- Inject deceptive pop-ups or overlays that impersonate Bellog UI.
+- Link to external sites (the user must click, but social-engineering is possible).
+- Abuse local browser APIs exposed to the page.
 
-## Websockets
+**Only import profiles and libraries from sources you trust.**
 
-TCP driver can be used using Websockets with the Websockify protocol.
-Before setting up a Websocket or TCP Driver be sure to understand how they work to prevent any risk.
-Websocket runs as a server on your PC and any page opened in the browser can potentially connect to it allowing attacks on your devices.
+## Hardware & Network Interfaces
+
+### WebSerial / CAN Bus
+
+WebSerial and CAN Bus (via slcan) request access to physical serial ports. Granting access allows the profile's code to read from and write to the device. A malicious profile could send unexpected commands to the connected hardware.
+
+### WebSocket / SocketCAN Bridge
+
+The CAN WebSocket transport connects to a local bridge process (e.g. `backends/can_websocket_bridge.py`). Any page in the browser can potentially connect to a WebSocket on `localhost`. Make sure the bridge only listens on `127.0.0.1` and consider adding authentication if running in a shared environment.
+
+### TCP via Websockify
+
+The TCP driver uses Websockify to proxy TCP connections through a WebSocket. The same localhost-exposure risk applies. Review the [Websockify guide](Websockify.md) before enabling this interface.
+
+## Recommendations
+
+1. **Only import `.bll` files from trusted sources.**
+2. Review custom scripts and layers inside a profile before running it.
+3. Do not grant serial-port access to untrusted profiles.
+4. Bind WebSocket bridges to `127.0.0.1` only.
+5. Keep your browser up to date to benefit from the latest security patches.

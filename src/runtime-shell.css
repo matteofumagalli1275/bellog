@@ -1,0 +1,393 @@
+/* ========================================================================
+   Bellog Runtime Shell CSS
+   All classes prefixed with blr- to avoid conflicts with user profile styles.
+   Uses CSS custom properties for theming.
+   ======================================================================== */
+
+:root {
+    --blr-primary: #ff7f50;
+    --blr-primary-dark: #e06a3f;
+    --blr-primary-light: #ffa07a;
+    --blr-text: #212121;
+    --blr-text-inv: #ffffff;
+    --blr-border: #e0e0e0;
+    --blr-bg: #ffffff;
+    --blr-tab-bg: #fafafa;
+    --blr-danger: #e53935;
+    --blr-warning: #fb8c00;
+    --blr-info: #1e88e5;
+    --blr-success: #43a047;
+    --blr-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --blr-font-size: 14px;
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+.blr-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: var(--blr-font);
+    font-size: var(--blr-font-size);
+    color: var(--blr-text);
+    background: var(--blr-bg);
+    margin: 0;
+}
+
+.blr-main-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────── */
+.blr-toolbar {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 10px;
+    background: var(--blr-primary);
+    color: var(--blr-text-inv);
+    flex-shrink: 0;
+    gap: 6px;
+    position: relative;
+}
+
+.blr-toolbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.blr-toolbar-items {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.blr-toolbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.blr-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.blr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    line-height: 1.5;
+    white-space: nowrap;
+    background: transparent;
+    color: inherit;
+    transition: background 0.15s;
+}
+
+.blr-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.blr-btn--toolbar {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.blr-btn--toolbar:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.blr-btn--active {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.blr-btn--danger {
+    background: var(--blr-danger);
+    color: #fff;
+    border-color: var(--blr-danger);
+}
+
+.blr-btn--danger:hover {
+    background: #c62828;
+}
+
+/* ── Select ─────────────────────────────────────────────────── */
+.blr-select {
+    padding: 4px 24px 4px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.12);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23fff'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 10px 6px;
+    color: inherit;
+    font-size: 13px;
+    font-family: inherit;
+    line-height: 1.5;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.blr-select:focus {
+    outline: 2px solid var(--blr-primary-light);
+}
+
+.blr-select option {
+    color: var(--blr-text);
+    background: var(--blr-bg);
+}
+
+/* ── Tabs ───────────────────────────────────────────────────── */
+.blr-tabs-bar {
+    display: flex;
+    border-bottom: 1px solid var(--blr-border);
+    background: var(--blr-tab-bg);
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.blr-tab {
+    padding: 7px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-size: 13px;
+    white-space: nowrap;
+    user-select: none;
+    color: #757575;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.blr-tab:hover {
+    color: var(--blr-text);
+    border-bottom-color: #bdbdbd;
+}
+
+.blr-tab--active {
+    color: var(--blr-text);
+    border-bottom-color: var(--blr-primary);
+    font-weight: 500;
+}
+
+/* ── Tab Content ────────────────────────────────────────────── */
+.blr-tab-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.blr-tab-panel {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.blr-tab-panel--hidden {
+    display: none;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.blr-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.blr-badge--info {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.blr-badge--warning {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.blr-badge--danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.blr-badge--success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* ── View Layouts ───────────────────────────────────────────── */
+.blr-view-full {
+    width: 100%;
+    height: 100%;
+}
+
+/* ── Split Pane ─────────────────────────────────────────────── */
+.blr-split-pane {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.blr-split-pane__panel {
+    overflow: hidden;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+}
+
+.blr-split-pane__panel--grow {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.blr-split-pane__divider {
+    flex-shrink: 0;
+    background: var(--blr-border, #d0d0d0);
+    position: relative;
+    z-index: 1;
+    transition: background 0.15s;
+}
+
+.blr-split-pane__divider:hover,
+.blr-split-pane__divider:active {
+    background: var(--blr-primary, #3273dc);
+}
+
+/* Horizontal divider (between columns): thin vertical bar */
+.blr-split-pane__divider--h {
+    width: 4px;
+    cursor: col-resize;
+}
+
+/* Vertical divider (between rows): thin horizontal bar */
+.blr-split-pane__divider--v {
+    height: 4px;
+    cursor: row-resize;
+}
+
+/* ── Fragment ───────────────────────────────────────────────── */
+.blr-fragment {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    outline: none;
+}
+
+/* ── Fragment Search Bar ────────────────────────────────────── */
+.blr-search-bar {
+    position: absolute;
+    top: 4px;
+    right: 16px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 6px;
+    background: var(--blr-bg);
+    border: 1px solid var(--blr-border);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    font-family: var(--blr-font);
+}
+
+.blr-search-bar__input {
+    width: 180px;
+    padding: 3px 6px;
+    border: 1px solid var(--blr-border);
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: var(--blr-font);
+    outline: none;
+    background: var(--blr-bg);
+    color: var(--blr-text);
+}
+
+.blr-search-bar__input:focus {
+    border-color: var(--blr-primary-light);
+}
+
+.blr-search-bar__count {
+    min-width: 52px;
+    text-align: center;
+    font-size: 11px;
+    color: #757575;
+    white-space: nowrap;
+}
+
+.blr-search-bar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--blr-text);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0;
+}
+
+.blr-search-bar__btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.blr-fragment mark {
+    background: #fff176;
+    color: inherit;
+    border-radius: 1px;
+    padding: 0 1px;
+}
+
+/* ── Utilities ──────────────────────────────────────────────── */
+.blr-hidden {
+    display: none !important;
+}
+
+.blr-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #999;
+    font-size: 16px;
+    font-family: var(--blr-font);
+}
+
+.blr-error {
+    padding: 24px;
+    color: var(--blr-danger);
+    font-size: 16px;
+    font-family: var(--blr-font);
+}

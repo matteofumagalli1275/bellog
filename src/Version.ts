@@ -1,5 +1,6 @@
 
-export const PROFILE_VERSION = "4"
+export const PROFILE_VERSION = "5"
+export const SCHEMA_VERSION = 1
 export const VERSION = "v0.3.0"
 
 export function checkVersionForRedirection(setupVersion: string) {

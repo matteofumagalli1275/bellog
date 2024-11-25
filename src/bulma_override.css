@@ -1,0 +1,29 @@
+
+:root {
+    --bulma-primary-h: 16deg; /* Set primary color */
+    --bulma-primary-s: 100%; /* Set primary color */
+    --bulma-primary-l: 65%; /* Set primary color */
+    --bulma-primary: coral;
+
+}
+
+.navbar {
+    --bulma-navbar-item-color: white;
+}
+
+.button.is-primary {
+    color: white;
+}
+
+.button.is-primary {
+    color: white;
+}
+
+.file.is-primary span {
+    color: white;
+}
+
+.panel-block.is-hoverable:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
