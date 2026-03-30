@@ -7,7 +7,7 @@ export const LineSerializer: LayerProperty = {
     name: LayerEmbeddedNames.LineSerializer,
     type: LayerType.Layer,
     config: {
-            code: beautify(function middleware(ctx, accumulator, input, next, throwException, props) {
+            code: beautify(`function middleware(ctx, accumulator, input, next, throwException, props) {
                         // This is an example line serializer (appends newline separator to output)
                         // ctx: context information of type LayerEventCommonProperties. See doc
                         // accumulator: use it to keep state across invocations
@@ -20,14 +20,14 @@ export const LineSerializer: LayerProperty = {
                         const _data = typeof input.data !== "string" ? String.fromCharCode.apply(null, input.data) : input.data;
 
                         props.newline = props.newline
-                            .replace(/\\r/g, "\r")
-                            .replace(/\\n/g, "\n")
-                            .replace(/\\t/g, "\t");
+                            .replace(/\\\\r/g, "\\r")
+                            .replace(/\\\\n/g, "\\n")
+                            .replace(/\\\\t/g, "\\t");
 
                         _accumulator.nextAcc = next(_accumulator.nextAcc, {data: _data + props.newline}, next.next, throwException)
 
                         return _accumulator;
-        }.toString()),
+        }`),
         input: [
             {
                 id: 0,
@@ -54,11 +54,11 @@ export const LineSerializer: LayerProperty = {
                 }
             }
         ],
-        testCode: beautify(function test(props) {
+        testCode: beautify(`function test(props) {
             return [
-                {test: {data: new TextEncoder().encode("Hello World")}, expected: [{data: "Hello World\r"}]},
+                {test: {data: new TextEncoder().encode("Hello World")}, expected: [{data: "Hello World\\r"}]},
             ]
-        }.toString()),
+        }`),
     },
     disabled: false,
     deterministic: true

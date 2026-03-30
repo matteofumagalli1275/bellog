@@ -7,7 +7,7 @@ export const LineDeserializer: LayerProperty = {
     name: LayerEmbeddedNames.LineDeserializer,
     type: LayerType.Layer,
     config: {
-        code: beautify(function middleware(ctx, accumulator, input, next, throwException, props)  {
+        code: beautify(`function middleware(ctx, accumulator, input, next, throwException, props) {
             // This is an example line deserializer (splits data into lines when newline characters are found)
             // ctx: context information of type LayerEventCommonProperties. See doc
             // accumulator: use it to keep state across invocations
@@ -22,13 +22,13 @@ export const LineDeserializer: LayerProperty = {
             let _data = typeof input.data !== "string" ? String.fromCharCode.apply(null, input.data) : input.data;
 
             props.newline = props.newline
-                .replace(/\\r/g, "\r") // Convert \\r to actual \r
-                .replace(/\\n/g, "\n") // Convert \\n to actual \n
-                .replace(/\\t/g, "\t"); // Convert \\t to actual \t
+                .replace(/\\\\r/g, "\\r") // Convert \\r to actual \\r
+                .replace(/\\\\n/g, "\\n") // Convert \\n to actual \\n
+                .replace(/\\\\t/g, "\\t"); // Convert \\t to actual \\t
             props.discard = props.discard
-                .replace(/\\r/g, "\r") // Convert \\r to actual \r
-                .replace(/\\n/g, "\n") // Convert \\n to actual \n
-                .replace(/\\t/g, "\t"); // Convert \\t to actual \t
+                .replace(/\\\\r/g, "\\r") // Convert \\r to actual \\r
+                .replace(/\\\\n/g, "\\n") // Convert \\n to actual \\n
+                .replace(/\\\\t/g, "\\t"); // Convert \\t to actual \\t
 
             for (let i = 0; i < _data.length; i++) {
                 if (props.newline.indexOf(_data[i]) >= 0) {
@@ -49,7 +49,7 @@ export const LineDeserializer: LayerProperty = {
             }
 
             return _accumulator;
-        }.toString()),
+        }`),
         input: [
             {
                 id: 0,
@@ -96,13 +96,13 @@ export const LineDeserializer: LayerProperty = {
                 }
             }
         ],
-        testCode: beautify(function test(props) {
+        testCode: beautify(`function test(props) {
             return [
-                {test: {data: new TextEncoder().encode("Hello World\r\n")}, expected: [{data: "Hello World"}]},
-                {test: {data: new TextEncoder().encode("Hello World\r\nABC\r\n")}, expected: [{data: "Hello World"}, {data: "ABC"}]},
+                {test: {data: new TextEncoder().encode("Hello World\\r\\n")}, expected: [{data: "Hello World"}]},
+                {test: {data: new TextEncoder().encode("Hello World\\r\\nABC\\r\\n")}, expected: [{data: "Hello World"}, {data: "ABC"}]},
                 {test: {data: new Uint8Array(props.maxLineSize + 1).fill('A'.charCodeAt(0))}, exception: [{data: "Line exceeded " + props.maxLineSize}]},
             ]
-        }.toString())
+        }`)
     },
     disabled: false,
     deterministic: true
