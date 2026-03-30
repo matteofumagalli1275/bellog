@@ -45,8 +45,8 @@ class BellogRuntime {
 
         // Create interface instances via DriverFactory
         this.interfaces = [];
-        const tokenFlag = await db.flags.get("websocketToken");
-        const websocketToken = (tokenFlag?.value as string) || '';
+        const tokenSetting = await db.settings.get("websocketToken");
+        const websocketToken = tokenSetting?.value || '';
         for (const ifcProp of this.profile.interfaces) {
             if ((ifcProp as any).deleted) continue;
             const ifc = DriverFactory.build(ifcProp.type, ifcProp.settings, websocketToken);

@@ -4,15 +4,15 @@ import {db} from "../../../../common/providers/indexedDb/db";
 
 export const SettingsOutlet = () => {
 
-    const tokenFlag = useLiveQuery(() => db.flags.get("websocketToken"));
-    const websocketToken = (tokenFlag?.value as string) ?? '';
+    const tokenSetting = useLiveQuery(() => db.settings.get("websocketToken"));
+    const websocketToken = tokenSetting?.value ?? '';
 
     function setWebsocketToken(value: string) {
-        db.flags.update("websocketToken", {value: value})
+        db.settings.update("websocketToken", {value})
     }
 
     function regenerateWebsocketToken() {
-        db.flags.update("websocketToken", {value: crypto.randomUUID()})
+        db.settings.update("websocketToken", {value: crypto.randomUUID()})
     }
 
     return (

@@ -49,7 +49,7 @@ const App = () => {
         } catch (ex) {}
 
         try {
-            db.flags.add({
+            db.settings.add({
                 name: "websocketToken",
                 value: crypto.randomUUID()
             }, "websocketToken")

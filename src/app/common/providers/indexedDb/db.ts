@@ -2,7 +2,8 @@ import Dexie, { Table } from 'dexie';
 import {
     UserDataFlags,
     UserDataFolder, UserDataProfileMeta,
-    UserDataProfileProject
+    UserDataProfileProject,
+    UserDataSettings
 } from "../../model/UserData";
 
 export type DbFolder =  Omit<UserDataFolder, 'id'> & { id?: number };
@@ -12,6 +13,8 @@ export type DbProfileProject = UserDataProfileProject
 export type DbProfileMeta = Omit<UserDataProfileMeta, 'id'> & { id?: number };
 
 export type DbFlags = UserDataFlags
+
+export type DbSettings = UserDataSettings
 
 export interface DbHistoryMeta {
     id?: number;
@@ -39,6 +42,7 @@ export class MySubClassedDexie extends Dexie {
   profilesMeta!: Table<DbProfileMeta>;
   profilesProject!: Table<DbProfileProject>;
   flags!: Table<DbFlags>;
+  settings!: Table<DbSettings>;
   historyMeta!: Table<DbHistoryMeta>;
   historyEntries!: Table<DbHistoryEntry>;
 
@@ -51,6 +55,9 @@ export class MySubClassedDexie extends Dexie {
         flags: 'name, value',
         historyMeta: '++id, profileId, startTime',
         historyEntries: '++id, historyId, [historyId+timestamp]',
+    });
+    this.version(2).stores({
+        settings: 'name',
     });
   }
 }

@@ -14,7 +14,12 @@ export interface UserDataProfileProject {
 
 export interface UserDataFlags {
     name: string;
-    value: boolean | string;
+    value: boolean;
+}
+
+export interface UserDataSettings {
+    name: string;
+    value: string;
 }
 
 export interface UserDataProfileMeta {
