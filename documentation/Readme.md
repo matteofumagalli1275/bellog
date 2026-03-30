@@ -321,19 +321,61 @@ When **not** recording, data lives only in memory. Each view fragment keeps up t
 
 ## Global Hooks
 
-Functions available from any script, layer, or HTML component:
+The `window.bellog` object is available from any script, layer, or HTML component at runtime.
+
+### Sending data
 
 ```javascript
-// Send raw data (string or Uint8Array)
+// Broadcast data to all connected interfaces
 bellog.rawSend("hello");
+bellog.rawSend(new Uint8Array([0x01, 0x02, 0x03]));
 
+// Send data to a specific interface by id
+const ifc = bellog.getInterfaces({ name: "Serial" })[0];
+bellog.send(ifc.id, "hello");
+```
+
+### Querying interfaces
+
+```javascript
+// List all interfaces → [{ id, name, type }, ...]
+bellog.getInterfaces();
+
+// Filter by type (matches InterfaceType enum values)
+bellog.getInterfaces({ type: "Serialport (WebSerial)" });
+bellog.getInterfaces({ type: "CAN Bus" });
+
+// Filter by name
+bellog.getInterfaces({ name: "My Serial Port" });
+
+// Combine filters
+bellog.getInterfaces({ type: "TCP Socket", name: "Main" });
+```
+
+Available `type` values: `"Clipboard"`, `"Serialport (WebSerial)"`, `"CAN Bus"`, `"WebAdb"`, `"TCP Socket"`.
+
+### Global variables (symbols)
+
+```javascript
+// Read a declared global variable
+const val = bellog.symbols.get("myVar");
+
+// Write a declared global variable
+bellog.symbols.set("myVar", 42);
+```
+
+Only variables declared in the **Global Variables** table are present in `bellog.symbols`. The initial value comes from the declared default.
+
+### Builder helpers
+
+```javascript
 // Use a builder to compose then send
 bellog.buildAndSend("LineBuilder", { Text: "text" });
 bellog.buildAndSend("HexStringBuilder", { HexString: "AABBCC" });
 bellog.buildAndSend("MyCustomBuilder", { param1: 111 });
 ```
 
-Driver lifecycle events:
+### Driver lifecycle events
 
 ```javascript
 document.addEventListener("bellog:DriverOpened", function (e) {
@@ -343,6 +385,17 @@ document.addEventListener("bellog:DriverClosed", function (e) {
     console.log("Driver closed");
 });
 ```
+
+### Copy-pasted libraries
+
+Scripts support the CommonJS `module`/`exports` shim. When pasting a library that uses `module.exports`, expose it to `window` manually:
+
+```javascript
+// paste lodash (CommonJS build) here, then:
+window._ = module.exports;
+```
+
+UMD libraries that detect `window` will write to it automatically and need no extra line.
 
 ---
 

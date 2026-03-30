@@ -79,15 +79,7 @@ class BellogRuntime {
 
         // Load and execute profile scripts
         bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
-
-        // Expose rawSend so scripts can write directly to interfaces
-        const bellogGlobal = (window as any)["bellog"];
-        bellogGlobal.rawSend = (data: Uint8Array | string) => {
-            for (const entry of this.interfaces) {
-                entry.ifc.send(data);
-            }
-        };
-
+        this.setupGlobalApi();
         for (const script of this.profile.scripts) {
             bellogRuntimeScriptController.addProfileScript(script.name, script.code);
         }
@@ -121,12 +113,43 @@ class BellogRuntime {
         bellogRuntimeEventEngine.init(this.profile);
 
         bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
+        this.setupGlobalApi();
         for (const script of this.profile.scripts) {
             bellogRuntimeScriptController.addProfileScript(script.name, script.code);
         }
         bellogRuntimeScriptController.executeScripts();
 
         this.injectStyles();
+    }
+
+    /**
+     * Attach all bellog.* API functions onto the global bellog object.
+     * Called after bellogRuntimeScriptController.init() (which creates window.bellog)
+     * and before executeScripts() so scripts can use them at startup.
+     */
+    private setupGlobalApi(): void {
+        const g = (window as any)["bellog"];
+
+        /** Send data to all connected interfaces. */
+        g.rawSend = (data: Uint8Array | string) => {
+            for (const entry of this.interfaces) {
+                entry.ifc.send(data);
+            }
+        };
+
+        /** Send data to a specific interface by its id. */
+        g.send = (id: number, data: Uint8Array | string) => {
+            this.sendToInterface(id, data);
+        };
+
+        /**
+         * Return a list of loaded interfaces.
+         * @returns array of { id, name, type }
+         */
+        g.getInterfaces = () => {
+            return this.interfaces
+                .map(e => ({ id: e.props.id, name: e.props.name, type: e.props.type }));
+        };
     }
 
     private injectStyles(): void {
