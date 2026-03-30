@@ -78,7 +78,7 @@ class BellogRuntime {
         bellogRuntimeEventEngine.init(this.profile);
 
         // Load and execute profile scripts
-        bellogRuntimeScriptController.init();
+        bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
 
         // Expose rawSend so scripts can write directly to interfaces
         const bellogGlobal = (window as any)["bellog"];
@@ -120,7 +120,7 @@ class BellogRuntime {
 
         bellogRuntimeEventEngine.init(this.profile);
 
-        bellogRuntimeScriptController.init();
+        bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
         for (const script of this.profile.scripts) {
             bellogRuntimeScriptController.addProfileScript(script.name, script.code);
         }
