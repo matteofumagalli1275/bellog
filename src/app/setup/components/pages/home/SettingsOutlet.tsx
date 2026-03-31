@@ -15,6 +15,10 @@ export const SettingsOutlet = () => {
         db.settings.update("websocketToken", {value: crypto.randomUUID()})
     }
 
+    function showSecurityInfo() {
+        db.flags.update("disclaimerAccepted", {value: false})
+    }
+
     return (
         <div className="column">
             <h1 className="title">Settings</h1>
@@ -41,6 +45,18 @@ export const SettingsOutlet = () => {
                 </div>
                 {!websocketToken.trim() ?
                     <p className="help is-danger">WebSocket Token is required for secure connections</p> : ""}
+            </div>
+
+            <div className="field">
+                <div className="control">
+                    <label className="label">Security</label>
+                    <button className="button" onClick={showSecurityInfo}>
+                        <span className="icon">
+                            <i className="fas fa-shield-alt"/>
+                        </span>
+                        <span>View Security Information</span>
+                    </button>
+                </div>
             </div>
         </div>
     )

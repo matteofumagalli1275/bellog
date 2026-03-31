@@ -23,10 +23,7 @@ Bellog supports:
 
 ## Try it online
 
-Visit the hosted version at **<https://bel-log.github.io>**.
-
-You can also run it locally by downloading the compiled page from the
-[bel-log.github.io](https://github.com/bel-log/bel-log.github.io) repository.
+Visit the hosted version at **<https://bellog.it>**.
 
 ## Documentation
 

@@ -41,11 +41,7 @@ export const PageDisclaimer = (props) => {
                     WebSerial, CAN Bus, and WebSocket interfaces interact directly with hardware
                     or local network services.
                     Misconfiguration or use of untrusted bridge software may expose your devices to unintended access.
-                    Review the&nbsp;
-                    <a href="https://github.com/bel-log/bellog/blob/master/documentation/SecurityConsiderations.md"
-                       target="_blank" rel="noopener noreferrer">
-                        full Security Considerations
-                    </a> before enabling these interfaces.
+                    You can review this notice again at any time from the <strong>Settings</strong> page.
                 </p>
 
                 <h6>Acceptance</h6>
