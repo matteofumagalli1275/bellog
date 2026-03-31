@@ -19,29 +19,37 @@ export const InterfaceTcpSocketSetup = (props: { id: number, handleClose: () => 
 
     return (
         <React.Fragment>
-            <BindableInput title={"TCP Target IP"}
-                           bv={settings.ip}
-                           availableParams={[]}
-                           setBindableVariable={(val) => updateSettings("ip", val)}
-            />
+            <div className="field">
+                <BindableInput title={"TCP Target IP"}
+                               bv={settings.ip}
+                               availableParams={[]}
+                               setBindableVariable={(val) => updateSettings("ip", val)}
+                />
+            </div>
 
-            <BindableInput title={"TCP Target Port"}
-                           bv={settings.port}
-                           availableParams={[]}
-                           setBindableVariable={(val) => updateSettings("port", val)}
-            />
+            <div className="field">
+                <BindableInput title={"TCP Target Port"}
+                               bv={settings.port}
+                               availableParams={[]}
+                               setBindableVariable={(val) => updateSettings("port", val)}
+                />
+            </div>
 
-            <BindableSelectBoolean title={"TCP SSL/TLS"}
-                                   bv={settings.ssl}
-                                   availableParams={[]}
-                                   setBindableVariable={(val) => updateSettings("ssl", val)}
-            />
+            <div className="field">
+                <BindableSelectBoolean title={"TCP SSL/TLS"}
+                                       bv={settings.ssl}
+                                       availableParams={[]}
+                                       setBindableVariable={(val) => updateSettings("ssl", val)}
+                />
+            </div>
 
-            <BindableInput title={"WebSocket Proxy Port"}
-                           bv={settings.wsPort}
-                           availableParams={[]}
-                           setBindableVariable={(val) => updateSettings("wsPort", val)}
-            />
+            <div className="field">
+                <BindableInput title={"WebSocket Proxy Port"}
+                               bv={settings.wsPort}
+                               availableParams={[]}
+                               setBindableVariable={(val) => updateSettings("wsPort", val)}
+                />
+            </div>
         </React.Fragment>
     )
 }

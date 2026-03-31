@@ -25,12 +25,14 @@ export const InterfaceCanSetup = (props: { id: number, handleClose: () => void }
 
     return (
         <React.Fragment>
-            <BindableSelect title={"Transport"}
-                            options={["serial", "socket"]}
-                            bv={settings.transport}
-                            availableParams={[]}
-                            setBindableVariable={(val) => updateSettings("transport", val)}
-            />
+            <div className="field">
+                <BindableSelect title={"Transport"}
+                                options={["serial", "socket"]}
+                                bv={settings.transport}
+                                availableParams={[]}
+                                setBindableVariable={(val) => updateSettings("transport", val)}
+                />
+            </div>
 
             <div className={`field is-grouped is-grouped-multiline ${isSerial ? "" : "is-hidden"}`}>
                 <BindableDataList title={"CAN Bitrate"}
@@ -62,17 +64,21 @@ export const InterfaceCanSetup = (props: { id: number, handleClose: () => void }
                 />
             </div>
 
-            <BindableInput title={"ID Whitelist (hex, comma-separated)"}
-                           bv={settings.idWhitelist}
-                           availableParams={[]}
-                           setBindableVariable={(val) => updateSettings("idWhitelist", val)}
-            />
+            <div className="field">
+                <BindableInput title={"ID Whitelist (hex, comma-separated)"}
+                               bv={settings.idWhitelist}
+                               availableParams={[]}
+                               setBindableVariable={(val) => updateSettings("idWhitelist", val)}
+                />
+            </div>
 
-            <BindableInput title={"My Default CAN ID (hex)"}
-                           bv={settings.defaultCanId}
-                           availableParams={[]}
-                           setBindableVariable={(val) => updateSettings("defaultCanId", val)}
-            />
+            <div className="field">
+                <BindableInput title={"My Default CAN ID (hex)"}
+                               bv={settings.defaultCanId}
+                               availableParams={[]}
+                               setBindableVariable={(val) => updateSettings("defaultCanId", val)}
+                />
+            </div>
         </React.Fragment>
     )
 }
