@@ -466,13 +466,15 @@ For Linux systems with SocketCAN, use the bundled Python bridge:
 # Virtual CAN (testing)
 sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
-python backends/socketcan/can_websocket_bridge.py --channel vcan0
+python backends/socketcan/can_websocket_bridge.py --channel vcan0 --token <your-token>
 
 # Real adapter
-python backends/socketcan/can_websocket_bridge.py --channel can0 --bitrate 500000
+python backends/socketcan/can_websocket_bridge.py --channel can0 --bitrate 500000 --token <your-token>
 ```
 
 Requires: `python-can`, `websockets` (pip install).
+
+The `--token` value must match the **WebSocket Token** shown in Bellog's **Settings** page. Bellog appends it automatically as `?token=…` on every connection. If `--token` is omitted the bridge accepts all connections (not recommended outside localhost).
 
 In the CAN interface settings, set the transport to WebSocket and configure the socket URL.
 
