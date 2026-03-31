@@ -56,7 +56,6 @@ export const serialPortLogger: ProfileProperty = {
         {
             id: 1, name: "Show Line",
             channelRef: localRef(1, "Serial Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Query, compareDataSettings: {query: ""},
             stopPropagation: false,
             htmlRef: embeddedRef(HtmlEmbeddedComponentNames.DivWithTimestamp, ElementType.Html),

@@ -74,7 +74,6 @@ export const jsonLint: ProfileProperty = {
         {
             id: 1, name: "Valid JSON",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return data.valid === true;"},
             stopPropagation: true,
@@ -88,7 +87,6 @@ export const jsonLint: ProfileProperty = {
         {
             id: 2, name: "Invalid JSON",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return data.valid === false;"},
             stopPropagation: true,

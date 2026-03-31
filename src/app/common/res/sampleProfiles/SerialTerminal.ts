@@ -126,7 +126,6 @@ export const serialTerminal: ProfileProperty = {
             config: {
                 channelRef: localRef(1, "Input", ElementType.Channel),
                 layerId: 0,
-                applyToEquivalentLayersInOtherChannels: false,
                 compareType: CompareDataType.Query,
                 compareDataSettings: {query: ""},
                 actionRef: localRef(1, "UpdateTerminal", ElementType.Action),

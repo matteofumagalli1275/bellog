@@ -19,7 +19,6 @@ export interface ConditionalRenderProperty {
     name: string,
     channelRef: ElementReference,
     layerId: number,
-    applyToEquivalentLayersInOtherChannels: boolean,
     compareDataType: CompareDataType,
     compareDataSettings: CompareDataSettings,
     stopPropagation: boolean,

@@ -111,7 +111,6 @@ export const iotDeviceLogger: ProfileProperty = {
         {
             id: 1, name: "MQTT CCAPI",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return /MQTT CCAPI/.test(data.data);"},
             stopPropagation: true,
@@ -122,7 +121,6 @@ export const iotDeviceLogger: ProfileProperty = {
         {
             id: 2, name: "Errors",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return /ERROR/.test(data.data) && !/CCAPI_ERR_CODE_NO_ERROR/.test(data.data);"},
             stopPropagation: true,
@@ -136,7 +134,6 @@ export const iotDeviceLogger: ProfileProperty = {
         {
             id: 3, name: "Main Lines",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return !/alloc\\.c:/.test(data.data);"},
             stopPropagation: false,
@@ -150,7 +147,6 @@ export const iotDeviceLogger: ProfileProperty = {
         {
             id: 4, name: "Alloc Lines",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return /alloc\\.c:/.test(data.data);"},
             stopPropagation: false,
@@ -161,7 +157,6 @@ export const iotDeviceLogger: ProfileProperty = {
         {
             id: 5, name: "All Plain",
             channelRef: localRef(1, "Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Query,
             compareDataSettings: {query: ""},
             stopPropagation: false,

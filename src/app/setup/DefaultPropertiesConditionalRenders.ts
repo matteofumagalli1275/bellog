@@ -29,7 +29,6 @@ export function buildDefaultConditionalRenders(values: ConditionalRenderProperty
         name: newName,
         channelRef: getUndefinedRef(ElementType.Channel),
         layerId: 0,
-        applyToEquivalentLayersInOtherChannels: false,
         compareDataType: CompareDataType.Query,
         compareDataSettings: buildDefaultConditionalRendersCompareDataSettings(CompareDataType.Query, []),
         stopPropagation: false,

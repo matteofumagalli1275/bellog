@@ -34,7 +34,6 @@ export const clipboardLineViewer: ProfileProperty = {
             id: 1, name: "Show Line",
             channelRef: localRef(1, "Input", ElementType.Channel),
             layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Query,
             compareDataSettings: {query: ""},
             stopPropagation: false,

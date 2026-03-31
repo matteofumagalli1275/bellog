@@ -30,7 +30,6 @@ export function buildDefaultEventChannelUpdate(values: EventProperty[], action: 
                 compareType: CompareDataType.Query,
                 compareDataSettings: buildDefaultEventChannelUpdateCompareSettings(CompareDataType.Query, []),
                 layerId: -1,
-                applyToEquivalentLayersInOtherChannels: false,
                 actionRef: {
                     refId: action.id,
                     refName: "",

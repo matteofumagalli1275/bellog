@@ -134,18 +134,6 @@ export const ChannelUpdateEvent = (props: {id: number}) => {
                         </div>
                     </div>
                 </div>
-                <div className="field">
-                    <label className="label">Apply To Other Same Layers</label>
-                    <div className="control">
-                        <label className="checkbox">
-                            <input type="checkbox" checked={settings.applyToEquivalentLayersInOtherChannels}
-                                   onChange={(evt) => {
-                                       updateChannelUpdateSettings("applyToEquivalentLayersInOtherChannels", evt.target.checked)
-                                   }}/>
-                            &nbsp;ON
-                        </label>
-                    </div>
-                </div>
             </div>
 
             <div className="control mb-2">

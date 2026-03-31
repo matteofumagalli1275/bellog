@@ -318,7 +318,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 1, name: "CANopen Frame",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Query,
             compareDataSettings: {query: ""},
             stopPropagation: false,
@@ -330,7 +329,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 2, name: "Heartbeat Only",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return data.type === 'HB';"},
             stopPropagation: false,
@@ -342,7 +340,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 3, name: "SDO Only",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return data.type === 'SDO_TX' || data.type === 'SDO_RX';"},
             stopPropagation: false,
@@ -354,7 +351,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 4, name: "PDO Only",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return /PDO/.test(data.type);"},
             stopPropagation: false,
@@ -366,7 +362,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 5, name: "EMCY Only",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Code,
             compareDataSettings: {code: "return data.type === 'EMCY';"},
             stopPropagation: false,
@@ -378,7 +373,6 @@ export const canopenDecoder: ProfileProperty = {
         {
             id: 6, name: "Raw CAN",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 0,
-            applyToEquivalentLayersInOtherChannels: false,
             compareDataType: CompareDataType.Query,
             compareDataSettings: {query: ""},
             stopPropagation: false,

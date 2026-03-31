@@ -13,7 +13,6 @@ export type EventSettings = EventChannelUpdate
 export interface EventChannelUpdate {
     channelRef: ElementReference,
     layerId: number,
-    applyToEquivalentLayersInOtherChannels: boolean,
     compareType: CompareDataType,
     compareDataSettings: CompareDataSettings,
     actionRef: ElementReference
