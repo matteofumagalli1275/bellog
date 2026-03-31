@@ -1,4 +1,4 @@
-# Bellog
+<img src="documentation/logo_b.png" alt="Bellog" width="260"/>
 
 **Beautify and filter your Logs and Serial streams** ✨
 

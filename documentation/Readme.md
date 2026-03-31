@@ -1,4 +1,8 @@
+<img src="logo_b.png" alt="Bellog" width="260"/>
+
 # Bellog Documentation
+
+Visit Bellog online at **[bellog.it](https://bellog.it)** — no installation required.
 
 - [Security Considerations](SecurityConsiderations.md)
 - [TCP via Websockify](Websockify.md)
@@ -215,7 +219,6 @@ Events watch the data pipeline and trigger actions when conditions are met.
 |------|-------------|
 | **ChannelUpdate** | Fires when data passes through a specific channel/layer node and matches a condition (Code, Query, or Regex). Triggers an associated action. |
 
-Events can be configured to apply to equivalent layers across channels.
 
 ---
 
@@ -239,24 +242,41 @@ Actions are operations that can be triggered by events or by HTML button clicks.
 
 ### Scripts & Styles
 
-**Scripts** are global JavaScript files injected into the runtime page. They execute with full page scope. You can define helper functions, import libraries, or set up timers.
+**Scripts** are global JavaScript files executed at profile load time. Each script runs inside a `new Function` context with access to `window` and all browser globals. A CommonJS shim (`module`/`exports`) is provided so copy-pasted libraries that use `module.exports` work without crashing.
+
+To expose a helper or library globally, assign it to `window`:
+
+```javascript
+// helper function
+window.formatHex = (n) => n.toString(16).padStart(2, '0');
+
+// CommonJS library (e.g. lodash pasted in)
+window._ = module.exports;
+```
 
 **Styles** are global CSS files. They apply to all views and HTML components.
 
-> **Security warning:** scripts execute with full page privileges. Only add code from sources you trust. See [Security Considerations](SecurityConsiderations.md).
+> **Security warning:** scripts execute with full browser privileges. Only add code from sources you trust. See [Security Considerations](SecurityConsiderations.md).
 
 ---
 
 ### Global Variables
 
-Global variables (exported symbols) are named values that can be read and written from scripts, layers, and HTML components. They live in the `window.bellog.symbols` namespace.
+Global variables (exported symbols) are named values declared in the profile's **Global Variables** table. They are pre-populated at runtime with their default values and accessible via `window.bellog.symbols`.
 
 Each variable has:
-- **Name** — used as `bellog.symbols.<name>` in the namespace
-- **Default value** — initial value
+- **Name** — identifier used with `bellog.symbols.get(name)` / `bellog.symbols.set(name, value)`
+- **Default value** — initial value set at profile load
 - **Public** — whether it is visible to other profiles
 - **Persistent** — whether it survives across sessions
 - **Description** — documentation
+
+Only variables declared in the table are present in `bellog.symbols`. Scripts update them explicitly:
+
+```javascript
+bellog.symbols.set("myCounter", 0);
+const current = bellog.symbols.get("myCounter");
+```
 
 Variables can be bound to HTML component properties, enabling reactive UI updates.
 
@@ -365,15 +385,6 @@ bellog.symbols.set("myVar", 42);
 ```
 
 Only variables declared in the **Global Variables** table are present in `bellog.symbols`. The initial value comes from the declared default.
-
-### Builder helpers
-
-```javascript
-// Use a builder to compose then send
-bellog.buildAndSend("LineBuilder", { Text: "text" });
-bellog.buildAndSend("HexStringBuilder", { HexString: "AABBCC" });
-bellog.buildAndSend("MyCustomBuilder", { param1: 111 });
-```
 
 ### Driver lifecycle events
 
@@ -487,7 +498,7 @@ For slcan-compatible adapters, select the WebSerial transport in the CAN interfa
 ## FAQ
 
 **Can I trigger an action on a timer?**
-Yes — create a `setInterval` in a global script and call `bellog.rawSend()` or `bellog.buildAndSend()`.
+Yes — create a `setInterval` in a global script and call `bellog.rawSend()` or `bellog.send()`.
 
 **Can I trigger an action when specific data arrives?**
 Use an Event with a ChannelUpdate condition. Or call global hooks from within a layer.
