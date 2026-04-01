@@ -32,6 +32,7 @@ export const Toolbar = () => {
 
     function saveProfile() {
         appStore.dispatch(saveProfileDb())
+        window.dispatchEvent(new Event('profile-saved'))
     }
 
     function exportProfile() {

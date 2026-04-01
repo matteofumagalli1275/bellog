@@ -32,10 +32,13 @@ export const SetupNav = () => {
                 evt.preventDefault()
             }
         }
+        const savedEventListener = () => triggerSaveNotification()
         window.addEventListener('keydown', saveShortcutListener);
+        window.addEventListener('profile-saved', savedEventListener);
 
         return () => {
             window.removeEventListener('keydown', saveShortcutListener)
+            window.removeEventListener('profile-saved', savedEventListener)
         }
     }, []);
 
@@ -51,20 +54,21 @@ export const SetupNav = () => {
         }
     }, [storeMessage]);
 
+    function triggerSaveNotification() {
+        if (notificationRef.current) {
+            notificationRef.current.style.animationName = "none";
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    notificationRef.current.style.animationName = ""
+                }, 0);
+            })
+        }
+    }
+
     async function saveProfile() {
         try {
             appStore.dispatch(saveProfileDb())
-
-            if (notificationRef.current) {
-                notificationRef.current.style.animationName = "none";
-
-                requestAnimationFrame(() => {
-                    setTimeout(() => {
-                        notificationRef.current.style.animationName = ""
-                    }, 0);
-                })
-            }
-
+            triggerSaveNotification()
         } catch (e) {
             console.log(`Failed to save profile`);
         }
