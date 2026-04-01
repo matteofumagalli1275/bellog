@@ -9,6 +9,7 @@ import {getElementFromRef} from "../../setup/components/Utils";
 import {resolveCustomProperty} from "./BellogRuntimeUtils";
 import {bellogRuntimeDataBus} from "./BellogRuntimeDataBus";
 import {CompareDataType} from "../../common/model/profile/Common";
+import {bellogRuntimeDebug} from "./BellogRuntimeDebug";
 
 /**
  * Pre-computed adjacency list for a channel graph.
@@ -256,6 +257,7 @@ class BellogRuntimeLayerController {
         const accKey = `${channelId}:${nodeId}`;
         let outputResult = input;
 
+        const channelName = this.channels.find(c => c.id === channelId)?.name ?? String(channelId);
         const nextFunc = (accumulator: any, output: any) => {
             // Automatically carry _origin from input to output if not already present
             if (input && typeof input === 'object' && input._origin
@@ -279,6 +281,7 @@ class BellogRuntimeLayerController {
 
         try {
             const prevAccumulator = this.accumulators.get(accKey) ?? null;
+            bellogRuntimeDebug.log(`[CH OUT] "${channelName}" → "${layer.name}"`, input);
             const newAccumulator = layerFunc(ctx, prevAccumulator, input, nextFunc, throwException, layerProps);
             this.accumulators.set(accKey, newAccumulator);
         } catch (e) {
@@ -333,12 +336,15 @@ class BellogRuntimeLayerController {
 
         // The next function: called by the layer to propagate output to children
         const outgoingEdges = adj.get(nodeId) || [];
+        const channelName = this.channels.find(c => c.id === channelId)?.name ?? String(channelId);
         const nextFunc = (accumulator: any, output: any, next: any, throwException: any) => {
             // Automatically carry _origin from input to output if not already present
             if (input && typeof input === 'object' && input._origin
                 && output && typeof output === 'object' && !output._origin) {
                 output._origin = input._origin;
             }
+
+            bellogRuntimeDebug.log(`[CH IN] "${channelName}" → "${layer.name}"`, output);
 
             // Propagate to children based on route conditions
             for (const edge of outgoingEdges) {
@@ -413,7 +419,7 @@ class BellogRuntimeLayerController {
         let fn = this.layerFuncCache.get(key);
         if (!fn) {
             try {
-                fn = eval(`(${layer.config.code})`);
+                fn = eval(`(${layer.config.code})\n//# sourceURL=BellogLayer_${layer.name}.js`);
                 this.layerFuncCache.set(key, fn);
             } catch (e) {
                 console.error(`[BellogRuntime] Failed to compile layer "${layer.name}": ${e}`);

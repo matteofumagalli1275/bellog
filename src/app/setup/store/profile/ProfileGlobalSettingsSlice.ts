@@ -5,7 +5,8 @@ const intialState:SettingsProperty = {
     version: "1.0.0",
     rdnId: "com.mycompany.profilename",
     isLibrary: false,
-    maximumItemsPerView: 10000
+    maximumItemsPerView: 10000,
+    debugMode: false,
 }
 
 const profileSettings = createSlice({

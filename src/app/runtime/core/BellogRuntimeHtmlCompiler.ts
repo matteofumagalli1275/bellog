@@ -44,7 +44,7 @@ export function compileTemplateLiteral(
     });
 
     try {
-        const fn = new Function(...paramNames, 'return `' + html.config.code + '`');
+        const fn = new Function(...paramNames, 'return `' + html.config.code + '`\n//# sourceURL=BellogHtml_' + html.name + '.js');
         return fn(...paramValues);
     } catch (e) {
         console.error('[HtmlCompiler] Template compilation error:', e);
@@ -67,7 +67,7 @@ export function compileJavascriptHook(
     const paramValues = paramNames.map(name => resolvedProps[name]);
 
     try {
-        const fn = new Function(...paramNames, html.config.code);
+        const fn = new Function(...paramNames, html.config.code + '\n//# sourceURL=BellogHtmlHook_' + html.name + '.js');
         return (element: HTMLElement) => {
             fn.apply(element, paramValues);
         };

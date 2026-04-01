@@ -39,6 +39,10 @@ export const SideOtherSettings = () => {
         dispatch(profileGlobalSettingsActions.update({change: {maximumItemsPerView: value}}))
     }
 
+    function setDebugMode(value: boolean) {
+        dispatch(profileGlobalSettingsActions.update({change: {debugMode: value}}))
+    }
+
     return (
         <React.Fragment>
             <h1 className="title">Advanced settings</h1>
@@ -103,6 +107,19 @@ export const SideOtherSettings = () => {
                                }}/>
                     </div>
                 </div>
+            </div>
+
+            <div className="field">
+                <div className="control">
+                    <label className="checkbox">
+                        <input type="checkbox" checked={settings.debugMode ?? false}
+                               onChange={(evt) => {
+                                   setDebugMode(evt.target.checked)
+                               }}/>
+                        &nbsp;Debug mode
+                    </label>
+                </div>
+                <p className="help">When enabled, all data in/out from layers and interfaces is logged to the browser console during runtime execution.</p>
             </div>
 
             <DependenciesTable/>

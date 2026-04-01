@@ -12,6 +12,7 @@ import {bellogRuntimeEventEngine} from "./BellogRuntimeEventEngine";
 import {initActionExecutor} from "./BellogRuntimeActionExecutor";
 import {DriverFactory} from "../interfaces/DriverFactory";
 import {db} from "../../common/providers/indexedDb/db";
+import {bellogRuntimeDebug} from "./BellogRuntimeDebug";
 
 class BellogRuntime {
 
@@ -47,6 +48,8 @@ class BellogRuntime {
         this.interfaces = [];
         const tokenSetting = await db.settings.get("websocketToken");
         const websocketToken = tokenSetting?.value || '';
+        bellogRuntimeDebug.enabled = this.profile.settings?.debugMode ?? false;
+
         for (const ifcProp of this.profile.interfaces) {
             if ((ifcProp as any).deleted) continue;
             const ifc = DriverFactory.build(ifcProp.type, ifcProp.settings, websocketToken);
@@ -54,6 +57,7 @@ class BellogRuntime {
 
             // Wire receive: interface → layer controller
             ifc.onReceive((data, chunkInfo) => {
+                bellogRuntimeDebug.log(`[IFC RX] "${ifcProp.name}"`, data);
                 const now = new Date();
                 bellogRuntimeLayerController.outputFromIfc(ifcProp, Date.now(), {
                     data: data,
@@ -109,6 +113,8 @@ class BellogRuntime {
         bellogRuntimeLayerController.setChannels(this.profile.channels);
 
         this.interfaces = [];
+
+        bellogRuntimeDebug.enabled = this.profile.settings?.debugMode ?? false;
 
         bellogRuntimeEventEngine.init(this.profile);
 
@@ -234,6 +240,7 @@ class BellogRuntime {
     sendToInterface(ifcId: number, data: any): void {
         const entry = this.interfaces.find(i => i.props.id === ifcId);
         if (!entry) return;
+        bellogRuntimeDebug.log(`[IFC TX] "${entry.props.name}"`, data);
         entry.ifc.send(data);
     }
 
@@ -244,6 +251,7 @@ class BellogRuntime {
     feedData(ifcId: number, data: string | Uint8Array): void {
         const entry = this.interfaces.find(i => i.props.id === ifcId);
         if (!entry) return;
+        bellogRuntimeDebug.log(`[IFC RX] "${entry.props.name}"`, data);
         const now = new Date();
         bellogRuntimeLayerController.outputFromIfc(entry.props, Date.now(), {
             data: data,

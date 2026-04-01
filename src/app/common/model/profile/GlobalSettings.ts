@@ -3,5 +3,6 @@ export interface SettingsProperty {
     rdnId: string,
     isLibrary: boolean,
     version: string,
-    maximumItemsPerView: number
+    maximumItemsPerView: number,
+    debugMode?: boolean,
 }
