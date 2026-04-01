@@ -84,6 +84,18 @@ export function buildDefaultGlobalScript(values: CodeProperty[]): [number, CodeP
             id: maxId + 1,
             name: `Unnamed-${maxId+1}.js`,
             code: beautify(`
+            // Access and modify global symbols declared in the Exported Symbols table:
+            // const value = bellog.symbols.get("myvar");
+            // bellog.symbols.set("myvar", 42);
+
+            // Send data to all connected interfaces:
+            // bellog.rawSend("hello");
+            // bellog.rawSend(new Uint8Array([0x01, 0x02, 0x03]));
+
+            // Send data to a specific interface by id:
+            // const ifc = bellog.getInterfaces()[0];
+            // bellog.send(ifc.id, "hello");
+
             function custom_global_func() {
                 console.log("dummy")
             }`, beautifyOptions
