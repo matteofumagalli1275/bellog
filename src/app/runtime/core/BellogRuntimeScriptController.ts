@@ -7,6 +7,15 @@ import {ScriptExportedSymbols} from "../../common/model/profile/Common";
  * Global helpers/libraries are exposed via window.xxx directly.
  */
 
+function coerceSymbolValue(value: string): string | number | boolean | undefined {
+    if (value === "") return undefined;
+    if (value === "true") return true;
+    if (value === "false") return false;
+    const n = Number(value);
+    if (!isNaN(n)) return n;
+    return value;
+}
+
 class BellogRuntimeScriptController {
 
     private contexts: Map<string, Function[]> = new Map();
@@ -18,7 +27,7 @@ class BellogRuntimeScriptController {
 
         const symbols = new Map<string, any>();
         for (const sym of exportedSymbols) {
-            symbols.set(sym.name, sym.defaultValue !== "" ? sym.defaultValue : undefined);
+            symbols.set(sym.name, coerceSymbolValue(sym.defaultValue));
         }
 
         (window as any)["bellog"] = { symbols, lib: {} };
