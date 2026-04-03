@@ -9,6 +9,7 @@ import {serialPortLogger} from "./SerialPortLogger";
 import {iotDeviceLogger} from "./IotDeviceLogger";
 import {canopenDecoder} from "./CanopenDecoder";
 import {serialTerminal} from "./SerialTerminal";
+import {modbusRtuDecoder} from "./ModbusRtuDecoder";
 export interface SampleProfile {
     name: string;
     description: string;
@@ -53,6 +54,11 @@ export const SAMPLE_PROFILES: SampleProfile[] = [
         name: "Serial Terminal",
         description: "Raw serial terminal with keyboard input, ANSI support, and connect/disconnect events",
         profile: serialTerminal,
+    },
+    {
+        name: "Modbus RTU Decoder",
+        description: "Modbus RTU protocol decoder — CRC-validated frame extraction from raw serial bytes, colour-coded by FC type with Read, Write, Error and Raw views",
+        profile: modbusRtuDecoder,
     },
 ];
 
