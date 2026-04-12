@@ -36,6 +36,12 @@ export interface DbHistoryEntry {
     error?: string;
 }
 
+export interface DbPersistentSymbol {
+    profileId: number;
+    name: string;
+    value: string; // JSON-serialized
+}
+
 export class MySubClassedDexie extends Dexie {
 
   folders!: Table<DbFolder>;
@@ -45,6 +51,7 @@ export class MySubClassedDexie extends Dexie {
   settings!: Table<DbSettings>;
   historyMeta!: Table<DbHistoryMeta>;
   historyEntries!: Table<DbHistoryEntry>;
+  persistentSymbols!: Table<DbPersistentSymbol>;
 
   constructor() {
     super('Database_Bellog');
@@ -58,6 +65,11 @@ export class MySubClassedDexie extends Dexie {
     });
     this.version(2).stores({
         settings: 'name',
+    });
+    this.version(3).stores({
+        // Compound primary key [profileId+name] enables upsert via put().
+        // Secondary index on profileId allows bulk load per profile.
+        persistentSymbols: '[profileId+name], profileId',
     });
   }
 }

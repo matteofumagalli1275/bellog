@@ -82,7 +82,7 @@ class BellogRuntime {
         bellogRuntimeEventEngine.init(this.profile);
 
         // Load and execute profile scripts
-        bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
+        await bellogRuntimeScriptController.init(this._profileId, this.profile.scriptsExportedSymbols ?? []);
         this.setupGlobalApi();
         for (const script of this.profile.scripts) {
             bellogRuntimeScriptController.addProfileScript(script.name, script.code);
@@ -118,7 +118,7 @@ class BellogRuntime {
 
         bellogRuntimeEventEngine.init(this.profile);
 
-        bellogRuntimeScriptController.init(this.profile.scriptsExportedSymbols ?? []);
+        await bellogRuntimeScriptController.init(this._profileId, this.profile.scriptsExportedSymbols ?? []);
         this.setupGlobalApi();
         for (const script of this.profile.scripts) {
             bellogRuntimeScriptController.addProfileScript(script.name, script.code);
