@@ -5,6 +5,7 @@ import {InterfaceWebSerialSetup} from "./InterfaceWebSerialSetup";
 import {InterfaceAdbLogcatSetup} from "./InterfaceAdbSetup";
 import {InterfaceTcpSocketSetup} from "./InterfaceTcpSocketSetup";
 import {InterfaceCanSetup} from "./InterfaceCanSetup";
+import {InterfaceWebHidSetup} from "./InterfaceWebHidSetup";
 import {useDispatch, useSelector} from "react-redux";
 import {profileSelectInterfaceById} from "../../../../store/profile/ProfileSelectors";
 import {profileInterfacesActions} from "../../../../store/profile/ProfileInterfacesSlice";
@@ -23,6 +24,7 @@ export const InterfaceSetup = (props: { id: number }) => {
             case InterfaceType.InterfaceWebAdb:
             case InterfaceType.InterfaceTcpSocket:
             case InterfaceType.InterfaceCAN:
+            case InterfaceType.InterfaceWebHid:
                 return true;
         }
         return false;
@@ -102,6 +104,15 @@ export const InterfaceSetup = (props: { id: number }) => {
                             case InterfaceType.InterfaceCAN:
                                 return (
                                     <InterfaceCanSetup
+                                        id={props.id}
+                                        handleClose={() => {
+                                            setDriverModalIsOpen(false)
+                                        }}
+                                    />
+                                )
+                            case InterfaceType.InterfaceWebHid:
+                                return (
+                                    <InterfaceWebHidSetup
                                         id={props.id}
                                         handleClose={() => {
                                             setDriverModalIsOpen(false)

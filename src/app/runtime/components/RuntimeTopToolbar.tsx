@@ -30,6 +30,8 @@ export const RuntimeTopToolbar = () => {
                 return <WebSerialTopToolbar ifc={selectedIfc} />;
             case InterfaceType.InterfaceCAN:
                 return <CanTopToolbarItems ifc={selectedIfc} />;
+            case InterfaceType.InterfaceWebHid:
+                return <WebSerialTopToolbar ifc={selectedIfc} />;
             default:
                 return null;
         }

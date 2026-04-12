@@ -70,6 +70,11 @@ export function buildDefaultInterfaceSettings(type: InterfaceType): InterfaceSet
                 idWhitelist: "",
                 defaultCanId: "0x000",
             })
+        case InterfaceType.InterfaceWebHid:
+            return toBindable({
+                usagePage: 0,
+                usage: 0,
+            })
         default:
             return {}
     }

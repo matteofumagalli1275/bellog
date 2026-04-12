@@ -27,6 +27,11 @@ export interface InterfaceSerialPortWebSerialSettings {
 
 export interface InterfaceClipboardSettings {}
 
+export interface InterfaceWebHidSettings {
+    usagePage: BindableVariable<number>; // HID Usage Page (0 = any)
+    usage: BindableVariable<number>;     // HID Usage (0 = any)
+}
+
 export interface InterfaceCanSettings {
     transport: BindableVariable<string>
     bitrate: BindableVariable<number>
@@ -42,7 +47,8 @@ export type InterfaceSettings = InterfaceClipboardSettings |
     InterfaceSerialPortWebSerialSettings |
     InterfaceAdbLogcatSettings |
     InterfaceTcpSocketSettings |
-    InterfaceCanSettings
+    InterfaceCanSettings |
+    InterfaceWebHidSettings
 
 export enum InterfaceType {
     InterfaceClipboard = "Clipboard",
@@ -50,6 +56,7 @@ export enum InterfaceType {
     InterfaceWebAdb = "WebAdb",
     InterfaceTcpSocket = "TCP Socket",
     InterfaceCAN = "CAN Bus",
+    InterfaceWebHid = "WebHID",
 }
 
 export interface InterfacesProperty extends ElementProperty {
@@ -97,4 +104,9 @@ export const ORIGIN_PARAMS: IOParameter[] = [
     { id: -9, name: "_origin.can.rtr", type: IOParameterType.Object },
     { id: -10, name: "_origin.can.ext", type: IOParameterType.Object },
     { id: -11, name: "_origin.can.fd", type: IOParameterType.Object },
+    { id: -12, name: "_origin.hid", type: IOParameterType.Object },
+    { id: -13, name: "_origin.hid.reportId", type: IOParameterType.Number },
+    { id: -14, name: "_origin.hid.vendorId", type: IOParameterType.Number },
+    { id: -15, name: "_origin.hid.productId", type: IOParameterType.Number },
+    { id: -16, name: "_origin.hid.productName", type: IOParameterType.String },
 ];

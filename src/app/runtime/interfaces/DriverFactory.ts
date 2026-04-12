@@ -5,12 +5,14 @@ import { DriverAdbLogcat, DriverAdbLogcatDefaults } from "./DriverAdbLogcat";
 import { DirverLoggerDecorator } from "./DirverLoggerDecorator";
 import { DriverTcpSocket, DriverTcpSocketDefaults } from "./DriverTcpSocket";
 import { DriverCan, DriverCanDefaults } from "./DriverCan";
+import { DriverWebHid, DriverWebHidDefaults } from "./DriverWebHid";
 import {
     InterfaceAdbLogcatSettings,
     InterfaceCanSettings,
     InterfaceSerialPortWebSerialSettings,
     InterfaceSettings,
-    InterfaceType, InterfaceTcpSocketSettings
+    InterfaceType, InterfaceTcpSocketSettings,
+    InterfaceWebHidSettings
 } from "../../common/model/profile/Interface";
 
 export class DriverFactory {
@@ -27,6 +29,8 @@ export class DriverFactory {
                 return new DirverLoggerDecorator(new DriverTcpSocket(settings as InterfaceTcpSocketSettings, websocketToken))
             case InterfaceType.InterfaceCAN:
                 return new DirverLoggerDecorator(new DriverCan(settings as InterfaceCanSettings, websocketToken))
+            case InterfaceType.InterfaceWebHid:
+                return new DirverLoggerDecorator(new DriverWebHid(settings as InterfaceWebHidSettings))
             default:
                 return new InterfaceClipboard()
         }
@@ -44,6 +48,8 @@ export class DriverFactory {
                 return DriverTcpSocketDefaults
             case InterfaceType.InterfaceCAN:
                 return DriverCanDefaults
+            case InterfaceType.InterfaceWebHid:
+                return DriverWebHidDefaults
             default:
                 return DriverClipboardDefaults
         }

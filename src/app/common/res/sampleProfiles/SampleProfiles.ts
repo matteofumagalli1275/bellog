@@ -10,6 +10,7 @@ import {iotDeviceLogger} from "./IotDeviceLogger";
 import {canopenDecoder} from "./CanopenDecoder";
 import {serialTerminal} from "./SerialTerminal";
 import {modbusRtuDecoder} from "./ModbusRtuDecoder";
+import {mouseInputDecoder} from "./MouseInputDecoder";
 export interface SampleProfile {
     name: string;
     description: string;
@@ -59,6 +60,11 @@ export const SAMPLE_PROFILES: SampleProfile[] = [
         name: "Modbus RTU Decoder",
         description: "Modbus RTU protocol decoder — CRC-validated frame extraction from raw serial bytes, colour-coded by FC type with Read, Write, Error and Raw views",
         profile: modbusRtuDecoder,
+    },
+    {
+        name: "Mouse Input Decoder",
+        description: "WebHID mouse decoder — live input report viewer with button, X/Y, wheel decode and raw hex dump (All Events, Buttons Only, Raw Reports views)",
+        profile: mouseInputDecoder,
     },
 ];
 

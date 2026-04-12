@@ -58,7 +58,6 @@ Read the full [Security Considerations](documentation/SecurityConsiderations.md)
 
 ## Roadmap
 
-- Web HID
 - TLS
 
 ## License
