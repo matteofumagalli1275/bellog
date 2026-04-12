@@ -5,7 +5,6 @@ export enum SetupSideBarItems {
     MainSettings = "MainSettings",
     View = "View",
     CustomHtmlComponents = "CustomHtmlComponents",
-    CustomParserAndBuilders = "CustomParserAndBuilders",
     Actions = "Actions",
     CustomCodeAndStyles = "CustomCodeAndStyles",
     OtherSettings = "OtherSettings"
