@@ -168,10 +168,47 @@ html, body {
 /* ── Tabs ───────────────────────────────────────────────────── */
 .blr-tabs-bar {
     display: flex;
+    align-items: stretch;
     border-bottom: 1px solid var(--blr-border);
     background: var(--blr-tab-bg);
     flex-shrink: 0;
+    overflow: visible;
+}
+
+.blr-tabs-bar-tabs {
+    display: flex;
+    flex: 1;
     overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.blr-tabs-perspective {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--blr-border);
+}
+
+.blr-tabs-perspective select {
+    padding: 3px 20px 3px 8px;
+    border: 1px solid var(--blr-border);
+    border-radius: 3px;
+    background-color: var(--blr-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23757575'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 8px 5px;
+    color: var(--blr-text);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.blr-tabs-perspective select:focus {
+    outline: 2px solid var(--blr-primary-light);
 }
 
 .blr-tab {

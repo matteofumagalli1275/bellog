@@ -2,6 +2,7 @@ import {ProfileRepositoryInterface} from "../../common/repositories/ProfileRepos
 import {ProfileRepositoryFactory} from "../../common/repositories/ProfileRepositoryFactory";
 import {ProfileProperty} from "../../common/model/profile/Profile";
 import {ElementReference, ElementReferenceType, ElementType} from "../../common/model/profile/Common";
+import {DependencyRule} from "../../common/model/profile/Dependency";
 import {InterfacesProperty} from "../../common/model/profile/Interface";
 import {Interface, DriverOpenClose, isDriverOpenClose} from "../interfaces/Interface";
 import {ViewFragmentAppend, ViewProperty} from "../../common/model/profile/View";
@@ -13,6 +14,7 @@ import {initActionExecutor} from "./BellogRuntimeActionExecutor";
 import {DriverFactory} from "../interfaces/DriverFactory";
 import {db} from "../../common/providers/indexedDb/db";
 import {bellogRuntimeDebug} from "./BellogRuntimeDebug";
+import * as semver from 'semver';
 
 class BellogRuntime {
 
@@ -20,12 +22,37 @@ class BellogRuntime {
     private profile: ProfileProperty;
     private _profileId: number = 0;
     private interfaces: {props: InterfacesProperty, ifc: Interface}[] = [];
+    private libraryProfiles: Map<string, ProfileProperty> = new Map();
+    private _perspectiveLibraryRdnId: string | null = null;
 
     constructor() {
         this.repository = ProfileRepositoryFactory.getRepository();
     }
 
     get profileId(): number { return this._profileId; }
+
+    private async loadLibraries(): Promise<void> {
+        this.libraryProfiles = new Map();
+        const dependencies = this.profile.dependencies?.filter(d => !d.deleted) ?? [];
+        if (dependencies.length === 0) return;
+
+        const allProfiles = await this.repository.getProfiles();
+        for (const dep of dependencies) {
+            const match = allProfiles
+                .filter(p => p.isLibrary && p.rdnId === dep.rdnId)
+                .find(p => {
+                    if (dep.rule === DependencyRule.EQUAL) return semver.eq(p.version, dep.version);
+                    if (dep.rule === DependencyRule.GREATER_EQUAL) return semver.gte(p.version, dep.version);
+                    return false;
+                });
+            if (match) {
+                const libProject = await this.repository.getProfile(match.id);
+                if (libProject) {
+                    this.libraryProfiles.set(dep.rdnId, JSON.parse(libProject.setup) as ProfileProperty);
+                }
+            }
+        }
+    }
 
     async loadProfile(profileId: number) {
         await this.repository.connect();
@@ -39,6 +66,9 @@ class BellogRuntime {
             this.profile.layers = profileAny.middlewares;
             delete profileAny.middlewares;
         }
+
+        await this.loadLibraries();
+        this._perspectiveLibraryRdnId = null;
 
         // Configure layer controller
         bellogRuntimeLayerController.setLayers(this.profile.layers);
@@ -109,6 +139,9 @@ class BellogRuntime {
             delete profileAny.middlewares;
         }
 
+        await this.loadLibraries();
+        this._perspectiveLibraryRdnId = null;
+
         bellogRuntimeLayerController.setLayers(this.profile.layers);
         bellogRuntimeLayerController.setChannels(this.profile.channels);
 
@@ -169,7 +202,12 @@ class BellogRuntime {
         }
     }
 
+    /** Returns the profile for the active perspective (library or own profile). */
     getProfile(): ProfileProperty {
+        if (this._perspectiveLibraryRdnId) {
+            const lib = this.libraryProfiles.get(this._perspectiveLibraryRdnId);
+            if (lib) return lib;
+        }
         return this.profile;
     }
 
@@ -189,13 +227,43 @@ class BellogRuntime {
             }));
     }
 
+    /** Returns views from a specific library as if it were running standalone. */
+    getLibraryViews(rdnId: string): ElementReference[] {
+        const lib = this.libraryProfiles.get(rdnId);
+        if (!lib) return [];
+        return lib.views
+            .filter(v => !(v as any).deleted)
+            .map(v => ({
+                type: ElementType.View,
+                refType: ElementReferenceType.LibraryReference,
+                refName: v.name,
+                refId: v.id,
+                libraryRdnId: rdnId
+            }));
+    }
+
+    /** Returns metadata for all successfully loaded dependency libraries. */
+    getLoadedLibraries(): {rdnId: string, name: string}[] {
+        return Array.from(this.libraryProfiles.entries()).map(([rdnId, p]) => ({rdnId, name: p.name}));
+    }
+
+    /**
+     * Set the active viewing perspective.
+     * Pass a library rdnId to view that library's views, or null to return to the profile's own views.
+     */
+    setPerspective(rdnId: string | null): void {
+        this._perspectiveLibraryRdnId = rdnId;
+    }
+
     getDynamicViewSupport(): boolean {
         return false;
     }
 
     /**
-     * Resolve any element reference against the loaded profile.
-     * Handles the ElementType → profile key mapping.
+     * Resolve any element reference against the loaded profile or a library.
+     * - LibraryReference → always resolved from the named library profile
+     * - LocalReference in library perspective → resolved from the active library profile
+     * - Everything else → resolved from the current profile (including EmbeddedReference)
      */
     getElement<T>(ref: ElementReference): T {
         const keyMap: Record<string, string> = {
@@ -208,6 +276,23 @@ class BellogRuntime {
             [ElementType.ConditionalRendering]: 'conditionalRenderings',
         };
         const key = keyMap[ref.type];
+
+        if (ref.refType === ElementReferenceType.LibraryReference && ref.libraryRdnId) {
+            const lib = this.libraryProfiles.get(ref.libraryRdnId);
+            if (lib) {
+                return ((lib[key] as any[])?.find((it: any) => it.name === ref.refName) ?? null) as T;
+            }
+            return null as T;
+        }
+
+        if (ref.refType === ElementReferenceType.LocalReference && this._perspectiveLibraryRdnId) {
+            const lib = this.libraryProfiles.get(this._perspectiveLibraryRdnId);
+            if (lib) {
+                const found = ((lib[key] as any[])?.find((it: any) => it.id === ref.refId) ?? null) as T;
+                if (found) return found;
+            }
+        }
+
         return getElementFromRef(ref, this.profile[key] ?? [], []) as T;
     }
 
