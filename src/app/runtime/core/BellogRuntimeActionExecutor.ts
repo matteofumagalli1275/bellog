@@ -162,8 +162,8 @@ function executeReplaceHtmlProperties(config: ActionRenderSettings, channelParam
 
 function executeCustom(config: ActionCustomSettings, channelParams: any): void {
     try {
-        const fn = new Function('params', 'channelParams', config.code);
-        fn(channelParams, channelParams);
+        const fn = eval(`(${config.code})`) as (params: any) => void;
+        fn(channelParams);
     } catch (e) {
         console.error('[ActionExecutor] Custom action error:', e);
     }
