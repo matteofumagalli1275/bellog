@@ -978,7 +978,7 @@ export const canopenDecoder: ProfileProperty = {
                 ],
                 edges: [
                     {id: "0-1", source: "0", target: "1", routeConditionType: CompareDataType.Query, routeConditionSettings: {query: ""}, label: ""},
-                    {id: "1-2", source: "1", target: "2", routeConditionType: CompareDataType.Code, routeConditionSettings: {code: "data.family === 'SDO' && (data.service.indexOf('Block') === 0 || data.service === 'Abort transfer')"}, label: "Block SDO"}
+                    {id: "1-2", source: "1", target: "2", routeConditionType: CompareDataType.Code, routeConditionSettings: {code: "function(output, ctx) { return output.family === 'SDO' && (output.service.indexOf('Block') === 0 || output.service === 'Abort transfer'); }"}, label: "Block SDO"}
                 ]
             }
         }
@@ -1359,7 +1359,7 @@ export const canopenDecoder: ProfileProperty = {
             id: 2, name: "Control Traffic",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.family === 'NMT' || data.family === 'SYNC' || data.family === 'TIME';"},
+            compareDataSettings: {code: "function(data) { return data.family === 'NMT' || data.family === 'SYNC' || data.family === 'TIME'; }"},
             stopPropagation: false,
             htmlRef: localRef(1, "CANopen Row", ElementType.Html),
             renderModeType: RenderModeType.Code,
@@ -1369,7 +1369,7 @@ export const canopenDecoder: ProfileProperty = {
             id: 3, name: "SDO Traffic",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.family === 'SDO';"},
+            compareDataSettings: {code: "function(data) { return data.family === 'SDO'; }"},
             stopPropagation: false,
             htmlRef: localRef(1, "CANopen Row", ElementType.Html),
             renderModeType: RenderModeType.Code,
@@ -1379,7 +1379,7 @@ export const canopenDecoder: ProfileProperty = {
             id: 4, name: "PDO Traffic",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.family === 'PDO';"},
+            compareDataSettings: {code: "function(data) { return data.family === 'PDO'; }"},
             stopPropagation: false,
             htmlRef: localRef(1, "CANopen Row", ElementType.Html),
             renderModeType: RenderModeType.Code,
@@ -1389,7 +1389,7 @@ export const canopenDecoder: ProfileProperty = {
             id: 5, name: "Heartbeat Traffic",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.family === 'HEARTBEAT';"},
+            compareDataSettings: {code: "function(data) { return data.family === 'HEARTBEAT'; }"},
             stopPropagation: false,
             htmlRef: localRef(1, "CANopen Row", ElementType.Html),
             renderModeType: RenderModeType.Code,
@@ -1399,7 +1399,7 @@ export const canopenDecoder: ProfileProperty = {
             id: 6, name: "EMCY Traffic",
             channelRef: localRef(1, "CAN Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.family === 'EMCY';"},
+            compareDataSettings: {code: "function(data) { return data.family === 'EMCY'; }"},
             stopPropagation: false,
             htmlRef: localRef(1, "CANopen Row", ElementType.Html),
             renderModeType: RenderModeType.Code,

@@ -142,7 +142,7 @@ function executeReplaceHtmlProperties(config: ActionRenderSettings, channelParam
         }
     } else if (binding.mode === RenderModeType.Code && binding.code) {
         try {
-            const fn = new Function('params', binding.code);
+            const fn = eval(`(${binding.code})`);
             const overrides = fn(channelParams);
             if (overrides && typeof overrides === 'object') {
                 Object.assign(resolvedProps, overrides);
@@ -190,7 +190,7 @@ function executeFunctionAction(config: FunctionActionConfig, channelParams: any)
         }
         case FunctionActionMode.Code: {
             try {
-                const fn = new Function('params', config.code);
+                const fn = eval(`(${config.code})`);
                 fn(channelParams);
             } catch (e) {
                 console.error('[ActionExecutor] FunctionAction code error:', e);

@@ -44,7 +44,7 @@ function evaluateCondition(crp: ConditionalRenderProperty, data: any): boolean {
             case CompareDataType.Code: {
                 const code = (settings as CompareDataCode).code;
                 if (!code || code.trim().length === 0) return true;
-                const fn = new Function('data', code);
+                const fn = eval(`(${code})`);
                 return !!fn(data);
             }
             case CompareDataType.Query: {

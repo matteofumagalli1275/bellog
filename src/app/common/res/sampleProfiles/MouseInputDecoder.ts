@@ -246,7 +246,7 @@ export const mouseInputDecoder: ProfileProperty = {
             id: 2, name: "Button Press",
             channelRef: localRef(1, "HID Input", ElementType.Channel), layerId: 1,
             compareDataType: CompareDataType.Code,
-            compareDataSettings: {code: "return data.left || data.right || data.middle;"},
+            compareDataSettings: {code: "function(data) { return data.left || data.right || data.middle; }"},
             stopPropagation: false,
             htmlRef: embeddedRef(HtmlEmbeddedComponentNames.Div, ElementType.Html),
             renderModeType: RenderModeType.Code,
