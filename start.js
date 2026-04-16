@@ -22,6 +22,7 @@ webpackConfig.plugins.push(new Webpack.DefinePlugin({
 }))
 
 webpackConfig.mode = "development"
+webpackConfig.devtool = "source-map"
 
 const compiler = Webpack(webpackConfig);
 const devServerOptions = { ...{ ...webpackConfig.devServer, ...proxy }, open: true };
