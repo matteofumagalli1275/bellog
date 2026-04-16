@@ -5,8 +5,9 @@ import {SlcanCommands, SlcanParser} from "./SlcanProtocol";
 
 export class CanSerialTransport {
 
-    private port: SerialPort
-    private portReader: ReadableStreamDefaultReader<Uint8Array>
+    private port: SerialPort | null = null
+    private portReader: ReadableStreamDefaultReader<Uint8Array> | null = null
+    private readLoopDone: Promise<void> | null = null
     private parser: SlcanParser
     private cache: DriverCache<CanFrame>
     private onFrameCb: (frame: CanFrame) => void
@@ -49,7 +50,7 @@ export class CanSerialTransport {
 
             // Start reading
             this.parser.reset()
-            this.readLoop()
+            this.readLoopDone = this.readLoop()
         } catch (err) {
             this._status = DriverStatus.CLOSE
             this.onStatusChangeCb?.(this._status)
@@ -98,11 +99,20 @@ export class CanSerialTransport {
             await this.writeSerial(SlcanCommands.close())
         } catch { /* ignore if already closed */ }
         try {
-            this.portReader?.cancel()
+            await this.portReader?.cancel()
         } catch { /* ignore */ }
+        // Wait for readLoop to exit and release its lock before closing the port
+        await this.readLoopDone?.catch(() => {})
+        this.readLoopDone = null
         try {
             await this.port?.close()
         } catch { /* ignore */ }
+        try {
+            // Forget the port so the user is prompted to select one on next connect
+            await (this.port as any)?.forget()
+        } catch { /* ignore */ }
+        this.port = null
+        this.portReader = null
         this.parser.reset()
         this.cache.clean()
         this.onStatusChangeCb?.(this._status)
