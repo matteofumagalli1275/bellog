@@ -36,7 +36,7 @@ class SymbolMap extends Map<string, any> {
 
     set(key: string, value: any): this {
         super.set(key, value);
-        if (this.persistentNames?.has(key)) {
+        if (this.persistentNames.has(key)) {
             persistentSymbolRepository
                 .set(this.profileId, key, JSON.stringify(value))
                 .catch(e => console.error('[SymbolMap] Failed to persist symbol:', key, e));
