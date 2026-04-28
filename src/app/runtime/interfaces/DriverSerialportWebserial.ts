@@ -37,18 +37,22 @@ export class DriverSerialPortWebSerial implements DriverOpenClose {
     constructor(private readonly params: InterfaceSerialPortWebSerialSettings) {
         this.name = InterfaceType.InterfaceSerialPortWebSerial
         this._status = DriverStatus.CLOSE
+        const num = (v: any, fallback: number) => {
+            const n = Number(v)
+            return Number.isFinite(n) && n > 0 ? n : fallback
+        }
         this.options = {
-            baudRate: params.baudRate?.value ?? 115200,
-            dataBits: params.dataBits?.value ?? 8,
-            stopBits: params.stopBits?.value ?? 1,
+            baudRate: num(params.baudRate?.value, 115200),
+            dataBits: num(params.dataBits?.value, 8),
+            stopBits: num(params.stopBits?.value, 1),
             parity: params.parity?.value ?? "none",
-            bufferSize: params.bufferSize?.value ?? 255,
+            bufferSize: num(params.bufferSize?.value, 255),
             flowControl: params.flowControl?.value ?? "none",
         }
         this.DriverCache = new DriverCache()
         this.DriverCache.setTimeout(
-            params.cacheTimeout?.value ?? 200,
-            params.cacheMaxElemCount?.value ?? 100,
+            num(params.cacheTimeout?.value, 200),
+            num(params.cacheMaxElemCount?.value, 100),
         )
     }
 
@@ -101,7 +105,6 @@ export class DriverSerialPortWebSerial implements DriverOpenClose {
             try
             {
                 await this.getPortInstance()
-                this._status = DriverStatus.OPEN
                 this.onStatusChangeCb?.(this._status)
 
                 this.DriverCache.onFlush((data) => {
@@ -182,12 +185,7 @@ export class DriverSerialPortWebSerial implements DriverOpenClose {
             }
         ) ?? await navigator.serial.requestPort()
 
-        try {
-            await this.port.open(this.options)
-            this._status = DriverStatus.OPEN
-        } catch (error) {
-            this._status = DriverStatus.CLOSE
-        }
-
+        await this.port.open(this.options)
+        this._status = DriverStatus.OPEN
     }
 }
