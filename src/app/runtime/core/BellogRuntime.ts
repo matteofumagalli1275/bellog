@@ -224,6 +224,7 @@ class BellogRuntime {
         if (!entry) return;
         if (isDriverOpenClose(entry.ifc)) {
             await (entry.ifc as DriverOpenClose).open();
+            document.dispatchEvent(new CustomEvent('bellog:DriverOpened', { detail: { id: ifcId } }));
         }
     }
 
@@ -233,6 +234,7 @@ class BellogRuntime {
         if (!entry) return;
         if (isDriverOpenClose(entry.ifc)) {
             (entry.ifc as DriverOpenClose).close();
+            document.dispatchEvent(new CustomEvent('bellog:DriverClosed', { detail: { id: ifcId } }));
         }
     }
 

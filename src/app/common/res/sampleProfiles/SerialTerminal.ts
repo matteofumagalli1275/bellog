@@ -47,12 +47,14 @@ const terminalWidgetCode =
 
 // Runs on every incoming data event — writes raw bytes to xterm.
 const updateTerminalCode =
-    "if (!window._bellogTerm) return;\n" +
-    "var bytes = channelParams.data;\n" +
-    "if (bytes instanceof Uint8Array) {\n" +
-    "    window._bellogTerm.write(bytes);\n" +
-    "} else if (typeof bytes === 'string') {\n" +
-    "    window._bellogTerm.write(bytes);\n" +
+    "function(params) {\n" +
+    "    if (!window._bellogTerm) return;\n" +
+    "    var bytes = params.data;\n" +
+    "    if (bytes instanceof Uint8Array) {\n" +
+    "        window._bellogTerm.write(bytes);\n" +
+    "    } else if (typeof bytes === 'string') {\n" +
+    "        window._bellogTerm.write(bytes);\n" +
+    "    }\n" +
     "}";
 
 // Profile-level script: show connected/disconnected banners in the terminal.
